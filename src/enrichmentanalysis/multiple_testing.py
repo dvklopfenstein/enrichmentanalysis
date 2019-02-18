@@ -9,6 +9,7 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 __copyright__ = "Copyright (C) 2015-2019, DV Klopfenstein. All rights reserved."
 __author__ = "DV Klopfenstein"
 
+
 class Methods():
     """Class to manage multipletest methods from both local and remote sources."""
 
@@ -27,7 +28,6 @@ class Methods():
             'fdr_tsbky',      #  9) FDR 2-stage Benjamini-Krieger-Yekutieli (non-negative)
             'fdr_gbs',        # 10) FDR adaptive Gavrilov-Benjamini-Sarkar
             )),
-
     ]
     prefixes = {'statsmodels':'sm_'}
     NtMethodInfo = cx.namedtuple("NtMethodInfo", "source method fieldname")

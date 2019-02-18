@@ -23,7 +23,7 @@ setup(
     version=0.1,
     author='DV Klopfenstein',
     author_email='dvklopfenstein@gmail.com',
-    license=HLPR.license,
+    license='MIT License',
     long_description='Code for generic enrichment analysis',
     packages=['enrichmentanalysis'],
     include_package_data=True,
@@ -32,5 +32,5 @@ setup(
     classifiers=CLASSIFIERS,
     url='http://github.com/dvklopfenstein/enrichmentanalysis',
     description='Enrichment analysis',
-    install_requires=['scipy', 'datetime', 'collections'],
+    install_requires=['docopt', 'scipy', 'datetime', 'collections'],
 )

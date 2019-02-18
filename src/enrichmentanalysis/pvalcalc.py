@@ -5,9 +5,11 @@ __author__ = "DV Klopfenstein"
 
 import collections as cx
 import sys
+from scipy import stats
+
 
 # pylint: disable=too-few-public-methods
-class PvalCalcBase():
+class PvalCalcBase(object):
     """Base class for initial p-value calculations."""
 
     def __init__(self, name, pval_fnc, log):
@@ -29,7 +31,6 @@ class FisherScipyStats(PvalCalcBase):
     fmterr = "STUDY={A}/{B} POP={C}/{D} scnt({scnt}) stot({stot}) pcnt({pcnt}) ptot({ptot})"
 
     def __init__(self, name, log):
-        from scipy import stats
         super(FisherScipyStats, self).__init__(name, stats.fisher_exact, log)
 
     def calc_pvalue(self, study_count, study_n, pop_count, pop_n):
@@ -52,13 +53,14 @@ class FisherScipyStats(PvalCalcBase):
         cvar = pop_count - study_count
         dvar = pop_n - pop_count - bvar
         assert cvar >= 0, self.fmterr.format(
-            A=avar, B=bvar, C=cvar, D=dvar, scnt=study_count, stot=study_n, pcnt=pop_count, ptot=pop_n)
+            A=avar, B=bvar, C=cvar, D=dvar,
+            scnt=study_count, stot=study_n, pcnt=pop_count, ptot=pop_n)
         # stats.fisher_exact returns oddsratio, pval_uncorrected
         _, p_uncorrected = self.pval_fnc([[avar, bvar], [cvar, dvar]])
         return p_uncorrected
 
 
-class FisherFactory():
+class FisherFactory(object):
     """Factory for choosing a fisher function."""
 
     options = cx.OrderedDict([
