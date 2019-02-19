@@ -1,6 +1,9 @@
 run_go:
 	src/bin/run_enrichment.py data/exgo/study data/exgo/population data/exgo/association
 
+run_m:
+	src/bin/run_enrichment.py data/exgo/study data/exgo/population data/exgo/association -m bonferroni,sidak,holm-sidak,holm,simes-hochberg,hommel,fdr_bh,fdr_by,fdr_tsbh,fdr_tsbky,fdr_gbs
+
 run:
 	src/bin/run_enrichment.py data/ex/study001.txt data/ex/population.txt data/ex/population.txt
 

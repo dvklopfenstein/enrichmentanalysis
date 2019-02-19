@@ -32,22 +32,52 @@ class Methods():
     prefixes = {'statsmodels':'sm_'}
     NtMethodInfo = cx.namedtuple("NtMethodInfo", "source method fieldname")
 
-    def __init__(self, usr_methods=None):
+    def __init__(self, usr_methods=None, alpha=0.05):
+        self.alpha = alpha
+        assert 0 < alpha < 1, "Test-wise alpha must fall between (0, 1)"
         self._srcmethod2fieldname = self._init_srcmethod2fieldname()
-        self.statsmodels_multicomp = None
+        self.statsmodels_multicomp = multipletests
         if usr_methods is None:
             usr_methods = ['fdr_bh']
+        self.methods = []
         self._init_methods(usr_methods)
+
+    def run_multitest_corr(self, pvals_uncorr, log):
+        """Do multiple-test corrections on uncorrected pvalues."""
+        ntobj = cx.namedtuple("ntobj", "results pvals_uncorr alpha nt_method study")
+        for nt_method in self:  # usrmethod_flds:
+            # NtMethodInfo(source='statsmodels', method='bonferroni', fieldname='bonferroni'))
+            # NtMethodInfo(source='statsmodels', method='fdr_bh', fieldname='fdr_bh'))
+            #### ntmt = ntobj(results, pvals_uncorr, self.alpha, nt_method, study)
+            # self._run_multitest[nt_method.source](ntmt)
+            if log is not None:
+                #### self._log_multitest_corr(losg, results, ntmt, alpha)
+                self._log_multitest_corr(log, nt_method.source, nt_method.method)
+
+    #### def _log_multitest_corr(self, log, results, ntmt, alpha):
+    def _log_multitest_corr(self, log, src, method):
+        """Print information regarding multitest correction results."""
+        #### ntm = ntmt.nt_method
+        attr_mult = "p_{M}".format(M=self.get_fieldname(src, method))
+        #### sig_cnt = sum(1 for r in results if getattr(r, attr_mult) < alpha)
+        #### log.write("{N:8,} GO terms found significant (< {A}=alpha) after ".format(
+        ####     N=sig_cnt, A=alpha))
+        log.write("multitest correction: ")
+        log.write("ALPHA({A}) {MSRC} {METHOD}\n".format(A=self.alpha, MSRC=src, METHOD=method))
+
+    # def run_multipletests(self, pvals_uncorr):
+    #     """Run multiple-test correction."""
+    #     return self.statsmodels_multicomp(pvals_uncorr, self.alpha, 
 
     def _init_methods(self, usr_methods):
         """From the methods list, set list of methods to be used during GOEA."""
-        self.methods = []
         for usr_method in usr_methods:
             self._add_method(usr_method)
 
     def _add_method(self, method, method_source=None):
         """Determine method source if needed. Add method to list."""
         try:
+            # print('METHOD SOURCE: {S} METHOD: {M}'.format(S=method_source, M=method))
             if method_source is not None:
                 self._add_method_src(method_source, method)
             else:
@@ -57,6 +87,7 @@ class Methods():
 
     def _add_method_nosrc(self, usr_method):
         """Add method source, method, and fieldname to list of methods."""
+        print('MMMMMMMM', usr_method)
         for method_source, available_methods in self.all_methods:
             if usr_method in available_methods:
                 fieldname = self.get_fldnm_method(usr_method)
@@ -70,7 +101,7 @@ class Methods():
                 nmtup = self.NtMethodInfo(method_source, method, usr_method)
                 self.methods.append(nmtup)
                 return
-        raise self.rpt_invalid_method(usr_method)
+        raise self._rpt_invalid_method(usr_method)
 
     def getmsg_valid_methods(self):
         """Return a string containing valid method names."""
@@ -100,7 +131,7 @@ class Methods():
                 srcmethod_fieldname.append(((method_source, method), fieldname))
         return cx.OrderedDict(srcmethod_fieldname)
 
-    def rpt_invalid_method(self, usr_method):
+    def _rpt_invalid_method(self, usr_method):
         """Report which methods are available."""
         msgerr = "FATAL: UNRECOGNIZED METHOD({M})".format(M=usr_method)
         msg = [msgerr, self.getmsg_valid_methods(), msgerr]
@@ -129,12 +160,12 @@ class Methods():
         fieldname = method.replace('-', '_')
         return fieldname
 
-    def get_statsmodels_multipletests(self):
-        """Only load statsmodels package if it is used."""
-        if self.statsmodels_multicomp is not None:
-            return self.statsmodels_multicomp
-        self.statsmodels_multicomp = multipletests
-        return self.statsmodels_multicomp
+    #### def get_statsmodels_multipletests(self):
+    ####     """Only load statsmodels package if it is used."""
+    ####     if self.statsmodels_multicomp is not None:
+    ####         return self.statsmodels_multicomp
+    ####     self.statsmodels_multicomp = multipletests
+    ####     return self.statsmodels_multicomp
 
     def __iter__(self):
         return iter(self.methods)

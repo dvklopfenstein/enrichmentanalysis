@@ -32,9 +32,11 @@ class EnrichmentRun():
         self.assc = {a_id:terms for a_id, terms in associations.items() if a_id in self.pop_ids}
         self.term2popids = self._get_term2ids(self.pop_ids)
         self.pval_obj = FisherFactory().pval_obj
+        self._run_multitest = {
+            'statsmodels':lambda iargs: self._run_multitest_statsmodels(iargs)}
         if methods is None:
             methods = ['fdr_bh']
-        self.methods = Methods(methods)
+        self.objmethods = Methods(methods, alpha)
 
     def run_study(self, study_ids, log=sys.stdout):
         """Run an enrichment."""
@@ -45,7 +47,13 @@ class EnrichmentRun():
         if not study_ids:
             return results
 
-        pval_uncorr = self.get_pval_uncorr(study_ids, log)
+        results = self.get_pval_uncorr(study_ids, log)
+
+        pvals_uncorr = [o.pval_uncorr for o in results]
+        # self._run_multitest_corr(pvals_uncorr, methods, log)
+        self.objmethods.run_multitest_corr(pvals_uncorr, log)
+        # pvals_corr = self.objmethods.run_multipletests(pvals_uncorr)
+
         return results
 
     def get_pval_uncorr(self, study_in_pop, log=sys.stdout):
