@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Enrichment analysis with user-provided population and associations.
 
 Usage:

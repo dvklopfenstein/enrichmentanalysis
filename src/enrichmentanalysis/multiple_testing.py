@@ -49,13 +49,14 @@ class Methods():
             # NtMethodInfo(source='statsmodels', method='bonferroni', fieldname='bonferroni'))
             # NtMethodInfo(source='statsmodels', method='fdr_bh', fieldname='fdr_bh'))
             #### ntmt = ntobj(results, pvals_uncorr, self.alpha, nt_method, study)
-            # self._run_multitest[nt_method.source](ntmt)
+            #### self._run_multitest[nt_method.source](ntmt)
+            self._run_multitest_statsmodels(pvals_uncorr, nt_method.method)
             if log is not None:
                 #### self._log_multitest_corr(losg, results, ntmt, alpha)
-                self._log_multitest_corr(log, nt_method.source, nt_method.method)
+                self._log_multitest_corr(log, pvals_uncorr, nt_method.source, nt_method.method)
 
     #### def _log_multitest_corr(self, log, results, ntmt, alpha):
-    def _log_multitest_corr(self, log, src, method):
+    def _log_multitest_corr(self, log, results, src, method):
         """Print information regarding multitest correction results."""
         #### ntm = ntmt.nt_method
         attr_mult = "p_{M}".format(M=self.get_fieldname(src, method))
@@ -64,6 +65,13 @@ class Methods():
         ####     N=sig_cnt, A=alpha))
         log.write("multitest correction: ")
         log.write("ALPHA({A}) {MSRC} {METHOD}\n".format(A=self.alpha, MSRC=src, METHOD=method))
+
+    def _run_multitest_statsmodels(self, pvals_uncorr, method):
+        """Use multitest mthods that have been implemented in statsmodels."""
+        # print(len(pvals_uncorr), self.alpha, method)
+        results = self.statsmodels_multicomp(pvals_uncorr, self.alpha, method)
+        pvals_corrected = results[1] # reject_lst, pvals_corrected, alphacSidak, alphacBonf
+        # self._update_pvalcorr(ntmt, pvals_corrected)
 
     # def run_multipletests(self, pvals_uncorr):
     #     """Run multiple-test correction."""
