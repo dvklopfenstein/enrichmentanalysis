@@ -19,6 +19,7 @@ class EnrichmentRecord():
         self.pval_uncorr = pval_uncorr
         self.stu_items = stu_items
         self.pop_items = pop_items
+        self.multitests = None  # namedtuple
 
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

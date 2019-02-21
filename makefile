@@ -1,3 +1,5 @@
+# Enrichemt Analysis
+
 run_go:
 	src/bin/run_enrichment.py data/exgo/study data/exgo/population data/exgo/association
 
