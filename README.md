@@ -7,7 +7,7 @@ Do enrichment analysis on anything if you provide:
 
 ## The Enrichment Analysis Steps
   1. Generate pvalues using Fishers exact test
-  2. Do multipletest correction with any of the statsmodels functions:
+  2. Do multipletest correction with any of the statsmodels functions:    
     - `sm_bonferroni`, bonferroni one-step correction
     - `sm_sidak`, sidak one-step correction
     - `sm_holm-sidak`, holm-sidak step-down method using Sidak adjustments
