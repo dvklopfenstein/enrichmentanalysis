@@ -19,6 +19,7 @@ vim_:
 	src/bin/run_enrichment.py \
 	src/enrichmentanalysis/enrich_run.py \
 	src/enrichmentanalysis/enrich_rec.py \
+	src/enrichmentanalysis/enrich_results.py \
 	src/enrichmentanalysis/file_utils.py \
 	src/enrichmentanalysis/multiple_testing.py \
 	src/enrichmentanalysis/pvalcalc.py

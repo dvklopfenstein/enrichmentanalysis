@@ -17,7 +17,7 @@ class EnrichmentRun():
     patpval = "Calculating {N:,} uncorrected p-values using {PFNC}\n"
     ntpval = cx.namedtuple('NtPvalArgs', 'study_count study_n pop_count pop_n')
 
-    def __init__(self, population_ids, associations, alpha=.05, methods=None, log=sys.stdout):
+    def __init__(self, population_ids, associations, alpha=.05, methods=None):
         # Save all population IDs and associations
         self.all = {'pop_ids': population_ids, 'assc':associations}
         assert population_ids, "NO POPULATION IDs: {A}".format(A=population_ids)
@@ -32,8 +32,8 @@ class EnrichmentRun():
         self.assc = {a_id:terms for a_id, terms in associations.items() if a_id in self.pop_ids}
         self.term2popids = self._get_term2ids(self.pop_ids)
         self.pval_obj = FisherFactory().pval_obj
-        self._run_multitest = {
-            'statsmodels':lambda iargs: self._run_multitest_statsmodels(iargs)}
+        # self._run_multitest = {
+        #     'statsmodels':lambda iargs: self._run_multitest_statsmodels(iargs)}
         if methods is None:
             methods = ['fdr_bh']
         self.objmethods = Methods(methods, alpha)
@@ -46,13 +46,20 @@ class EnrichmentRun():
         if not study_ids:
             return results
         # Uncorrected P-values
-        results = self.get_pval_uncorr(study_ids, log)
+        results = self.get_pval_uncorr(study_in_pop, log)
         # Corrected P-values
         pvals_uncorr = [o.pval_uncorr for o in results]
-        mcorrs = self.objmethods.run_multitest_corr(pvals_uncorr, log)
+        pvals_corrected = self.objmethods.run_multitest_corr(pvals_uncorr, log)
         # pvals_corr = self.objmethods.run_multipletests(pvals_uncorr)
-
+        self._add_multitest(results, pvals_corrected)
         return results
+
+    def _add_multitest(self, results, pvals_corrected):
+        """Add multiple-test correction results to each result record."""
+        ntobj = cx.namedtuple('NtM', ' '.join(nt.fieldname for nt in self.objmethods.methods))
+        for rec, pvals_corr in zip(results, zip(*pvals_corrected)):
+            ntm = ntobj._make(pvals_corr)
+            rec.multitests = ntm
 
     def get_pval_uncorr(self, study_in_pop, log=sys.stdout):
         """Calculate the uncorrected pvalues for study items."""
@@ -72,7 +79,7 @@ class EnrichmentRun():
 
             one_record = EnrichmentRecord(
                 goid,
-                pval_args = self.ntpval._make([study_count, study_n, pop_count, pop_n]),
+                pval_args=self.ntpval._make([study_count, study_n, pop_count, pop_n]),
                 pval_uncorr=_calc_pvalue(study_count, study_n, pop_count, pop_n),
                 stu_items=study_items,
                 pop_items=pop_items)

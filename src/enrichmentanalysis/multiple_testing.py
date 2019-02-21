@@ -87,7 +87,7 @@ class Methods():
     def run_multitest_corr(self, pvals_uncorr, log):
         """Do multiple-test corrections on uncorrected pvalues."""
         # ntobj = cx.namedtuple("ntobj", "results pvals_uncorr alpha nt_method study")
-        results = []
+        pvals_corrected = []
         for nt_method in self.methods:  # usrmethod_flds:
             # NtMethodInfo(source='statsmodels', method='bonferroni', fieldname='bonferroni'))
             # NtMethodInfo(source='statsmodels', method='fdr_bh', fieldname='fdr_bh'))
@@ -95,18 +95,20 @@ class Methods():
             #### self._run_multitest[nt_method.source](ntmt)
             ntres = self._run_multitest_statsmodels(pvals_uncorr, nt_method.method)
             # attr_mult = "p_{M}".format(M=self.get_fieldname(nt_method.source, nt_method.method))
-            results.append((ntres.pvals_corrected, nt_method))
+            pvals_corrected.append(ntres.pvals_corrected)
             if log is not None:
-                self._log_multitest_corr(log, ntres.pvals_corrected, nt_method.source, nt_method.method)
-        return results
+                self._log_multitest_corr(log, ntres.pvals_corrected, nt_method)
+        assert len(pvals_corrected) == len(self.methods)
+        return pvals_corrected
 
-    def _log_multitest_corr(self, log, pvals_corr, src, method):
+    def _log_multitest_corr(self, log, pvals_corr, nt_method):
         """Print information regarding multitest correction results."""
         _alpha = self.alpha
         sig_cnt = sum(1 for m in pvals_corr if m < _alpha)
         log.write("{N:8,} terms found significant after ".format(N=sig_cnt))
         log.write("multitest correction: ")
-        log.write("ALPHA({A}) {MSRC} {METHOD}\n".format(A=self.alpha, MSRC=src, METHOD=method))
+        log.write("ALPHA({A}) {MSRC} {METHOD}\n".format(
+            A=self.alpha, MSRC=nt_method.source, METHOD=nt_method.method))
 
     def _run_multitest_statsmodels(self, pvals_uncorr, method):
         """Use multitest mthods that have been implemented in statsmodels."""
