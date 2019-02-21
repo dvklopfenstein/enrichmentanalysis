@@ -5,9 +5,9 @@ Do enrichment analysis on anything if you provide:
   * IDs of the study set
   * Associations between the IDs and the terms of interest
 
-The enrichment analysis includes:
-  * Generate pvalues using Fishers exact test
-  * Do multipletest correction with any of the statsmodels functions:
+## The Enrichment Analysis Steps
+  1. Generate pvalues using Fishers exact test
+  2. Do multipletest correction with any of the statsmodels functions:
     - `sm_bonferroni`, bonferroni one-step correction
     - `sm_sidak`, sidak one-step correction
     - `sm_holm-sidak`, holm-sidak step-down method using Sidak adjustments
