@@ -41,17 +41,15 @@ class EnrichmentRun():
     def run_study(self, study_ids, log=sys.stdout):
         """Run an enrichment."""
         results = []
-
         # Get study IDs which which are present in the population
         study_in_pop = self._get_study_ids(study_ids, log)
         if not study_ids:
             return results
-
+        # Uncorrected P-values
         results = self.get_pval_uncorr(study_ids, log)
-
+        # Corrected P-values
         pvals_uncorr = [o.pval_uncorr for o in results]
-        # self._run_multitest_corr(pvals_uncorr, methods, log)
-        self.objmethods.run_multitest_corr(pvals_uncorr, log)
+        mcorrs = self.objmethods.run_multitest_corr(pvals_uncorr, log)
         # pvals_corr = self.objmethods.run_multipletests(pvals_uncorr)
 
         return results

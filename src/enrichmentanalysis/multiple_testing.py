@@ -87,21 +87,22 @@ class Methods():
     def run_multitest_corr(self, pvals_uncorr, log):
         """Do multiple-test corrections on uncorrected pvalues."""
         # ntobj = cx.namedtuple("ntobj", "results pvals_uncorr alpha nt_method study")
+        results = []
         for nt_method in self.methods:  # usrmethod_flds:
             # NtMethodInfo(source='statsmodels', method='bonferroni', fieldname='bonferroni'))
             # NtMethodInfo(source='statsmodels', method='fdr_bh', fieldname='fdr_bh'))
             #### ntmt = ntobj(results, pvals_uncorr, self.alpha, nt_method, study)
             #### self._run_multitest[nt_method.source](ntmt)
             ntres = self._run_multitest_statsmodels(pvals_uncorr, nt_method.method)
+            # attr_mult = "p_{M}".format(M=self.get_fieldname(nt_method.source, nt_method.method))
+            results.append((ntres.pvals_corrected, nt_method))
             if log is not None:
-                #### self._log_multitest_corr(losg, results, ntmt, alpha)
-                self._log_multitest_corr(log, ntres.pvals_corrected,
-                                         nt_method.source, nt_method.method)
+                self._log_multitest_corr(log, ntres.pvals_corrected, nt_method.source, nt_method.method)
+        return results
 
     def _log_multitest_corr(self, log, pvals_corr, src, method):
         """Print information regarding multitest correction results."""
         _alpha = self.alpha
-        attr_mult = "p_{M}".format(M=self.get_fieldname(src, method))
         sig_cnt = sum(1 for m in pvals_corr if m < _alpha)
         log.write("{N:8,} terms found significant after ".format(N=sig_cnt))
         log.write("multitest correction: ")
@@ -127,7 +128,6 @@ class Methods():
         return self._srcmethod2fieldname[(method_source, method)]
 
     #### def get_statsmodels_multipletests(self):
-    ####     """Only load statsmodels package if it is used."""
     ####     if self.statsmodels_multicomp is not None:
     ####         return self.statsmodels_multicomp
     ####     self.statsmodels_multicomp = multipletests
