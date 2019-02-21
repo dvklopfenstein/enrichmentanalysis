@@ -7,7 +7,7 @@ Do enrichment analysis on anything if you provide:
 
 ## The Enrichment Analysis Steps
   1. Generate pvalues using Fishers exact test
-  2. Do multipletest correction with any of the statsmodels functions:    
+  2. Do multipletest correction with any of the SciPy's statsmodels functions:    
 
 | multicorrect   | Description
 |----------------|--------------------------------------
