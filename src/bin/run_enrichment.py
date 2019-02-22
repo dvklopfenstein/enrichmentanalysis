@@ -35,8 +35,9 @@ def main():
     pop_ids = read_ids(args['<population_ids>'])
     assc = read_associations(args['<associations>'])
     methods = args['--methods'].split(',')
-    obj = EnrichmentRun(pop_ids, assc, float(args['--alpha']), methods)
-    objresults = obj.run_study(stu_ids)
+    objrun = EnrichmentRun(pop_ids, assc, alpha=float(args['--alpha']), methods=methods)
+    objresults = objrun.run_study(stu_ids)
+    print(objresults)
     # Write Pathway Enrichment Analysis to a file
     # ana.csv_pathways(args['--csv'], token, resource='TOTAL')
     # ana.csv_found(args['--csv0'], token, resource='TOTAL')

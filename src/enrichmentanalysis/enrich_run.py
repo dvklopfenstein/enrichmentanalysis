@@ -9,6 +9,7 @@ import collections as cx
 from enrichmentanalysis.pvalcalc import FisherFactory
 from enrichmentanalysis.multiple_testing import Methods
 from enrichmentanalysis.enrich_rec import EnrichmentRecord
+from enrichmentanalysis.enrich_results import EnrichmentResults
 
 
 class EnrichmentRun():
@@ -16,10 +17,14 @@ class EnrichmentRun():
 
     patpval = "Calculating {N:,} uncorrected p-values using {PFNC}\n"
     ntpval = cx.namedtuple('NtPvalArgs', 'study_count study_n pop_count pop_n')
+    kw_dict = {
+        'alpha':0.05,
+        'methods':('fdr_bh'),
+        'min_overlap':0.7}
 
-    def __init__(self, population_ids, associations, alpha=.05, methods=None):
+    def __init__(self, population_ids, associations, **kws):
         # Save all population IDs and associations
-        self.all = {'pop_ids': population_ids, 'assc':associations}
+        self.args = self._init_args(population_ids, associations, **kws)
         assert population_ids, "NO POPULATION IDs: {A}".format(A=population_ids)
         assert associations, "EMPTY ASSOCIATION: {A}".format(A=associations)
         # Save the population IDs that are in the association
@@ -34,9 +39,7 @@ class EnrichmentRun():
         self.pval_obj = FisherFactory().pval_obj
         # self._run_multitest = {
         #     'statsmodels':lambda iargs: self._run_multitest_statsmodels(iargs)}
-        if methods is None:
-            methods = ['fdr_bh']
-        self.objmethods = Methods(methods, alpha)
+        self.objmethods = Methods(self.args['methods'], self.args['alpha'])
 
     def run_study(self, study_ids, log=sys.stdout):
         """Run an enrichment."""
@@ -52,7 +55,23 @@ class EnrichmentRun():
         pvals_corrected = self.objmethods.run_multitest_corr(pvals_uncorr, log)
         # pvals_corr = self.objmethods.run_multipletests(pvals_uncorr)
         self._add_multitest(results, pvals_corrected)
-        return results
+        objres = EnrichmentResults(self, study_in_pop, results)
+        return objres
+
+    def _chk_genes(self, study):
+        """Check gene sets."""
+        stu_n = len(study)
+        if self.pop_n < stu_n:
+            exit("\nERROR: The study file contains more elements than the population file. "
+                 "Please check that the study file is a subset of the population file.\n")
+        # check the fraction of genomic ids that overlap between study and population
+        overlap = float(len(study & self.pop_ids)) / stu_n
+        if overlap < 0.95:
+            sys.stderr.write("\nWARNING: only {} fraction of genes/proteins in study are found in "
+                             "the population  background.\n\n".format(overlap))
+        if overlap <= self.args.min_overlap:
+            exit("\nERROR: only {} of genes/proteins in the study are found in the "
+                 "background population. Please check.\n".format(overlap))
 
     def _add_multitest(self, results, pvals_corrected):
         """Add multiple-test correction results to each result record."""
@@ -114,5 +133,19 @@ class EnrichmentRun():
         perc = 100.0*num_cur/num_tot if num_tot != 0 else 0.0
         prt.write("{P:3.0f}% {N:>6,} of {M:>6,} {CUR} IDs found in {TOT}\n".format(
             CUR=strcur, TOT=strtot, N=num_cur, M=num_tot, P=perc))
+
+    def _init_args(self, pop_ids, assc, **kws_usr):
+        """Read arguments, Set options."""
+        kws_set = {k:v for k, v in kws_usr.items() if k in self.kw_dict}
+        # Set defaults if necessary
+        for key, val in self.kw_dict.items():
+            if val is not None and key not in kws_set:
+                if key == 'methods':
+                    kws_set[key] = tuple(val)
+                else:
+                    kws_set[key] = val
+        kws_set['pop_ids'] = pop_ids
+        kws_set['assc'] = assc
+        return kws_set
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.
