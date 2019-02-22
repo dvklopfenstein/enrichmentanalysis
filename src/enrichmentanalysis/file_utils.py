@@ -61,5 +61,12 @@ def read_associations(assoc_fn):
             N=len(assoc), FILE=assoc_fn))
     return {p:es for p, es in assoc.items()}
 
+def prepend(file_prefix, fout):
+    """Prepend user-requested text to a filename."""
+    if file_prefix is None:
+        return fout
+    fdir, fname = os.path.split(fout)
+    return os.path.join(fdir, '{PRE}{FILE}'.format(PRE=file_prefix, FILE=fname))
+
 
 # Copyright (C) 2018-2019, DV Klopfenstein, H Tang. All rights reserved.

@@ -21,5 +21,6 @@ class EnrichmentRecord():
         self.pop_items = pop_items
         self.multitests = None  # namedtuple
 
+        
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.
