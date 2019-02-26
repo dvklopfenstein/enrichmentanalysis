@@ -5,6 +5,16 @@ Do enrichment analysis on anything if you provide:
   * IDs of the study set
   * Associations between the IDs and the terms of interest
 
+## To Cite
+This code is extracted from the [GOATOOLS](https://github.com/tanghaibao/goatools) repository
+for running enrichment analysis of gene ontology terms.
+
+_Please cite the following research paper if you use GOATOOLS in your research_:
+
+Klopfenstein DV, Zhang L, Pedersen BS, ... Tang H
+[GOATOOLS: A Python library for Gene Ontology analyses](https://www.nature.com/articles/s41598-018-28948-z)    
+_Scientific reports_ | (2018) 8:10872 | DOI:10.1038/s41598-018-28948-z
+
 ## The Enrichment Analysis Steps
   1. Generate pvalues using Fishers exact test
   2. Do multipletest correction with any of SciPy's statsmodel functions:    
