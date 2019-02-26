@@ -8,9 +8,9 @@ Do enrichment analysis on anything if you provide:
 ## To Cite
 This code is a modified version of selected code from the [GOATOOLS](https://github.com/tanghaibao/goatools) repository.    
 GOATOOLS is used to run gene ontology enrichment analysis.    
-This repo is used in the [Python library for Reactome's Knowledgebase](https://github.com/dvklopfenstein/reactome_neo4j_py/blob/master/README.md)
+This repo was created for use by the [Python library for Reactome's Knowledgebase](https://github.com/dvklopfenstein/reactome_neo4j_py/blob/master/README.md)
 
-### Please Cite
+### Citation
 _Please cite the following research paper if you use this repo in your research_:
 
 Klopfenstein DV, Zhang L, Pedersen BS, ... Tang H
