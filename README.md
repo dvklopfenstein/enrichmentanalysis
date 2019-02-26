@@ -6,10 +6,10 @@ Do enrichment analysis on anything if you provide:
   * Associations between the IDs and the terms of interest
 
 ## To Cite
-This code is extracted from the [GOATOOLS](https://github.com/tanghaibao/goatools) repository
-for running enrichment analysis of gene ontology terms.
+This code is a modified version of the code from the [GOATOOLS](https://github.com/tanghaibao/goatools) repository.
+GOATOOLS is used to run gene ontology enrichment analysis.
 
-_Please cite the following research paper if you use GOATOOLS in your research_:
+_Please cite the following research paper if you use this repo in your research_:
 
 Klopfenstein DV, Zhang L, Pedersen BS, ... Tang H
 [GOATOOLS: A Python library for Gene Ontology analyses](https://www.nature.com/articles/s41598-018-28948-z)    
