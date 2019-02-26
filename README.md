@@ -6,8 +6,9 @@ Do enrichment analysis on anything if you provide:
   * Associations between the IDs and the terms of interest
 
 ## To Cite
-This code is a modified version of the code from the [GOATOOLS](https://github.com/tanghaibao/goatools) repository.    
+This code is a modified version of selected code from the [GOATOOLS](https://github.com/tanghaibao/goatools) repository.    
 GOATOOLS is used to run gene ontology enrichment analysis.
+This repo is used in the [Python library for Reactome's Knowledgebase](https://github.com/dvklopfenstein/reactome_neo4j_py/blob/master/README.md)
 
 _Please cite the following research paper if you use this repo in your research_:
 
