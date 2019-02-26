@@ -10,6 +10,7 @@ This code is a modified version of selected code from the [GOATOOLS](https://git
 GOATOOLS is used to run gene ontology enrichment analysis.    
 This repo is used in the [Python library for Reactome's Knowledgebase](https://github.com/dvklopfenstein/reactome_neo4j_py/blob/master/README.md)
 
+### Please Cite
 _Please cite the following research paper if you use this repo in your research_:
 
 Klopfenstein DV, Zhang L, Pedersen BS, ... Tang H
