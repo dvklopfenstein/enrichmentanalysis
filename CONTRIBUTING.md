@@ -1,9 +1,11 @@
 # Enrichment Analysis pull request guidelines
 
 ## When to confer
-If you are adding tests, documentation, or bug fixes please open a pull request.
+Please open a pull request
+if you are adding tests, documentation, or bug fixes.
 
-If you are adding new functionality, please email to strategize the proposed architectural changes.
+Please email before opening a pull request
+to strategize the proposed architectural changes if you are adding new functionality.
 
 
 ## Submitting a Pull Request
