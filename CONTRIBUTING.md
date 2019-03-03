@@ -6,8 +6,7 @@
 ## When to confer
 If you are adding tests, documentation, or bug fixes please open a pull request.
 
-If you are adding new functionality, please email to confer to strategize
-architectural changes.
+If you are adding new functionality, please email to strategize architectural changes.
 
 ## Submitting a Pull Request
 
