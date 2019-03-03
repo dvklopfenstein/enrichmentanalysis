@@ -1,12 +1,10 @@
 # Enrichment Analysis pull request guidelines
 
-* [**When to confer**](#when-to-confer)
-* [**Submitting a Pull Request**](#submitting-a-pull-request)
-
 ## When to confer
 If you are adding tests, documentation, or bug fixes please open a pull request.
 
-If you are adding new functionality, please email to strategize architectural changes.
+If you are adding new functionality, please email to strategize the proposed architectural changes.
+
 
 ## Submitting a Pull Request
 
