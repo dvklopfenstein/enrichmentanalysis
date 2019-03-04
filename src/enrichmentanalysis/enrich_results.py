@@ -61,7 +61,7 @@ class EnrichmentResults():
         with open(fout_txt, 'w') as prt:
             for study_id in self.study_ids:
                 prt.write('{ID}\n'.format(ID=study_id))
-            print('  {N} Study IDs found. WROTE: {TXT}'.format(
+            print('  {N:6} Study IDs found.                WROTE: {TXT}'.format(
                 N=self.study_n, TXT=fout_txt))
 
     def wr_notfound(self, fout_txt, pop_stu_genes):
@@ -70,7 +70,8 @@ class EnrichmentResults():
         with open(fout_txt, 'w') as prt:
             for gene_id in not_found:
                 prt.write('{ID}\n'.format(ID=gene_id))
-            print('  {N} study/population IDs not found. WROTE: {TXT}'.format(
+            print('  {N:6} study/population IDs not found. WROTE: {TXT}'.format(
                 N=len(not_found), TXT=fout_txt))
+
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

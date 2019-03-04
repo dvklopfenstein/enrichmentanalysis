@@ -1,1 +1,1 @@
-# Enrichment Analysis
+name = 'enrichmentanalysis'

@@ -1,4 +1,5 @@
 # Enrichment Analysis pull request guidelines
+Thank you for taking your time and expertise to contribute.
 
 ## When to confer
 Please open a pull request

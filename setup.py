@@ -1,36 +1,38 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 """Setup for PyPI usage."""
-
-import os.path as op
 
 from glob import glob
 from setuptools import setup
 
-
-CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
-    'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: BSD License',
-    'Programming Language :: Python :: 3',
-    'Topic :: Scientific/Engineering :: Bio-Informatics',
-    ]
-
-SETUP_DIR = op.abspath(op.dirname(__file__))
+def get_long_description():
+    """Get the package's long description."""
+    with open("README.md", "r") as fh:
+        long_description = fh.read()
 
 setup(
     name='enrichmentanalysis',
-    version=0.1,
+    version='0.0.1',
     author='DV Klopfenstein',
     author_email='dvklopfenstein@gmail.com',
-    license='MIT License',
-    long_description='Code for generic enrichment analysis',
-    packages=['enrichmentanalysis'],
-    include_package_data=True,
-    # package_data={"enrichmentanalysis.test_data": ["*.*"]},
+    long_description=get_long_description(),
+    long_description_content_type="text/markdown",
+    packages=[
+        'enrichmentanalysis',
+    ],
+    package_dir={'enrichmentanalysis': 'src/enrichmentanalysis'},
+    # include_package_data=True,
+    # package_data={"enrichmentanalysis.test_data.nbt_3102": ["*.*"]},
     scripts=glob('src/bin/*.py'),
-    classifiers=CLASSIFIERS,
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: BSD License',
+        'Programming Language :: Python :: 3',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Operating System :: OS Independent',
+    ],
     url='http://github.com/dvklopfenstein/enrichmentanalysis',
-    description='Enrichment analysis',
-    install_requires=['docopt', 'scipy', 'datetime', 'collections'],
+    description='Perform enrichment analysis on any IDs and associations',
+    install_requires=['timeit', 'datetime', 'collections'],
 )

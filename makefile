@@ -24,4 +24,26 @@ vim_:
 	src/enrichmentanalysis/multiple_testing.py \
 	src/enrichmentanalysis/pvalcalc.py
 
+# --------------------------------------------------------------------------------
+dist_archive:
+	#python3 -m pip install --user --upgrade setuptools wheel
+	python3 setup.py sdist bdist_wheel
+	find dist
+
+clean_dist:
+	rm -rf dist build enrichmentanalysis.egg-info
+
+# --------------------------------------------------------------------------------
+upload_pypi_test:
+	python setup.py register -r pypitest
+	python setup.py sdist upload -r pypitest
+
+clean_pyc:
+	find . -name \*.pyc | xargs rm -f
+
+clean:
+	rm -f *.csv
+	rm -f tmp_pylint
+
+
 # Copyright (C) 2015-2019, DV Klopfenstein. All rights reserved.

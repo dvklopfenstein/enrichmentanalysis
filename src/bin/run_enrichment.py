@@ -39,6 +39,7 @@ def main():
     pop_ids = read_ids(args['<population_ids>'])
     assc = read_associations(args['<associations>'])
     methods = args['--methods'].split(',')
+    # Run Enrichment
     objrun = EnrichmentRun(pop_ids, assc, alpha=float(args['--alpha']), methods=methods)
     objresults = objrun.run_study(stu_ids)
     # Write IDs found and not found to files
