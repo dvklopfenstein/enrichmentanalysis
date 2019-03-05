@@ -48,8 +48,10 @@ def main():
     # Write Pathway Enrichment Analysis to a file
     pval = float(args['--pval']) if args['--pval'] else None
     results = objresults.get_results_cond(pval, args['--pval_field'])
-    print('{N} results'.format(N=len(results)))
     # objresults.csv_enriched(args['--csv'], token, resource='TOTAL')
+    objrun.prt_results(results)
+
+    print('{N} results'.format(N=len(results)))
 
 
 if __name__ == '__main__':

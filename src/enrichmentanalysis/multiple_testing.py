@@ -135,6 +135,14 @@ class Methods():
     ####     self.statsmodels_multicomp = multipletests
     ####     return self.statsmodels_multicomp
 
+    def get_patfmt(self):
+        """Get pattern format for values in each method."""
+        return ' '.join(['{{{METHOD}:8.2e}}'.format(METHOD=m.fieldname) for m in self.methods])
+
+    def get_headers(self):
+        """Get pattern format for values in each method."""
+        return ' '.join(['{METHOD:<8}'.format(METHOD=m.fieldname) for m in self.methods])
+
 
 class _Init():
     """Initialize Methods object."""

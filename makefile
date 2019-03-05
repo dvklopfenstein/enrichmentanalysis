@@ -1,7 +1,7 @@
 # Enrichemt Analysis
 
 run_go:
-	src/bin/run_enrichment.py data/exgo/study data/exgo/population data/exgo/association
+	src/bin/run_enrichment.py data/exgo/study data/exgo/population data/exgo/association -m fdr_bh --pval=0.05 --pval_field=fdr_bh
 
 run_m:
 	src/bin/run_enrichment.py data/exgo/study data/exgo/population data/exgo/association -m bonferroni,sidak,holm-sidak,holm,simes-hochberg,hommel,fdr_bh,fdr_by,fdr_tsbh,fdr_tsbky
@@ -40,6 +40,7 @@ upload_pypi_test:
 
 clean_pyc:
 	find . -name \*.pyc | xargs rm -f
+	find . -name \*.st\*p | xargs rm -f
 
 clean:
 	rm -f *.csv
