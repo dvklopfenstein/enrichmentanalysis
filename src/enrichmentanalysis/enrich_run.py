@@ -163,7 +163,7 @@ class EnrichmentRun():
         return cx.namedtuple('ntresults', ' '.join([
                              ' '.join(EnrichmentRecord.flds),
                              self.objmethods.get_fields(),
-                             'stu_items pop_items']))
+                             'stu_items']))
 
     def _get_prtfmt(self):
         """Return format pattern for printing this record as text."""

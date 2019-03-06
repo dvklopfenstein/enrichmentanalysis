@@ -23,7 +23,10 @@ vim_:
 	src/enrichmentanalysis/report_results.py \
 	src/enrichmentanalysis/file_utils.py \
 	src/enrichmentanalysis/multiple_testing.py \
-	src/enrichmentanalysis/pvalcalc.py
+	src/enrichmentanalysis/pvalcalc.py \
+	src/enrichmentanalysis/wr_tbl.py \
+	src/enrichmentanalysis/wr_tbl_class.py
+
 
 # --------------------------------------------------------------------------------
 dist_archive:

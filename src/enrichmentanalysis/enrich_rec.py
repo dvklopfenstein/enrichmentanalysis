@@ -17,7 +17,7 @@ class EnrichmentRecord():
         'TermID',
         'stu_num',
         'stu_tot',
-        'stu_rato',
+        'stu_ratio',
         'pop_num',
         'pop_tot',
         'pop_ratio',
@@ -59,12 +59,34 @@ class EnrichmentRecord():
             pop_tot=ntpvals.pop_n,
             pop_ratio=float(ntpvals.pop_count)/ntpvals.pop_n,
             pval_uncorr=self.pval_uncorr,
-            **multidct,
-        )
+            **multidct)
 
     def get_nt_prt(self):
         """Print namedtuple containing record information."""
-        pass
+        if self.ntobj is None:
+            self.ntobj = self._get_ntobj()
+        ntp = self.ntpvalargs
+        multidct = {m:'{:8.2e}'.format(v) for m, v in self.multitests._asdict().items()}
+        return self.ntobj(
+            TermID=self.termid,
+            stu_num=ntp.study_count,
+            stu_tot=ntp.study_n,
+            stu_ratio=self.fld2fmt['stu_ratio'].format(stu_ratio=float(ntp.study_count)/ntp.study_n),
+            pop_num=ntp.pop_count,
+            pop_tot=ntp.pop_n,
+            pop_ratio=self.fld2fmt['pop_ratio'].format(pop_ratio=float(ntp.pop_count)/ntp.pop_n),
+            pval_uncorr=self.fld2fmt['pval_uncorr'].format(pval_uncorr=self.pval_uncorr),
+            stu_items=self._get_items_str(self.stu_items, ';'),
+            **multidct)
+
+    def _get_items_str(self, items, divider):
+        """Return one string containing all items."""
+        if items:
+            if type(next(iter(items))) == str:
+                return divider.join(items)
+            else:
+                return divider.join(str(e) for e in items)
+        return ''
 
     def _get_ntobj(self):
         """Create namedtuple object for enrichment results records."""
@@ -72,7 +94,7 @@ class EnrichmentRecord():
         return cx.namedtuple('ntresults',
                              ' '.join(self.flds) + \
                              ' '.join(self.multitests._fields) + \
-                             'stu_items pop_items')
+                             'stu_items')
     def _get_prtfmt(self):
         """Create print format."""
         return '{FMT} {M}'.format(

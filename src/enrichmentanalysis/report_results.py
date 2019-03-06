@@ -8,12 +8,24 @@ import sys
 # import collections as cx
 # from enrichmentanalysis.pvalcalc import FisherFactory
 # from enrichmentanalysis.multiple_testing import Methods
+from enrichmentanalysis.wr_tbl import wr_xlsx
+from enrichmentanalysis.wr_tbl import wr_tsv
 
 
 class ReportResults():
     """Report results in various formats."""
 
     headers = 'TermID     Stu Tot Stu/Tot   Pop   Tot Pop/Tot P-uncorr  '
+
+    fld2col_widths_dflts = {
+        'TermID': 12,
+        'stu_num': 4,
+        'stu_tot': 5,
+        'stu_ratio': 7,
+        'pop_num': 6,
+        'pop_tot': 6,
+        'pop_ratio': 7,
+    }
 
     def __init__(self, results):
         self.results = results
@@ -32,17 +44,29 @@ class ReportResults():
             multi = ['{METHOD:8}'.format(METHOD=m) for m in rec.multitests._fields]
             return self.headers + ' '.join(multi)
 
+    def wrtsv(self, fout_tsv):
+        """Write results into tsv file."""
+        if self.nts is None:
+            self.nts = self.get_nts()
+        kws = {}
+        wr_tsv(fout_tsv, self.nts, **kws)
+        print('  WROTE: {TSV}'.format(TSV=fout_tsv))
+
     def wrcsv(self, fout_csv):
         """Write results into csv file."""
         if self.nts is None:
             self.nts = self.get_nts()
         print('  WROTE: {CSV}'.format(CSV=fout_csv))
 
-    def wrxlsx(self, fout_csv):
-        """Write results into csv file."""
+    def wrxlsx(self, fout_xlsx):
+        """Write results into xlsx file."""
         if self.nts is None:
             self.nts = self.get_nts()
-        print('  WROTE: {XLSX}'.format(XLSX=fout_csv))
+        kws = {
+            'fld2col_widths': self.fld2col_widths_dflts,
+        }
+        wr_xlsx(fout_xlsx, self.nts, **kws)
+        print('  WROTE: {XLSX}'.format(XLSX=fout_xlsx))
 
     def get_nts(self):
         """Return namedtuples associated with results."""
