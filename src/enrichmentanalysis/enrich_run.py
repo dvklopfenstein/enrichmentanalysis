@@ -15,11 +15,11 @@ from enrichmentanalysis.enrich_results import EnrichmentResults
 class EnrichmentRun():
     """Do Enrichment."""
 
-    patrec = ('{TERM_ID:10} '
-              '{STU_CNT:3} {STU_TOT:3} {STU_RATIO:7.5f} '
-              '{POP_CNT:5} {POP_TOT:5} {POP_RATIO:7.5f} '
-              '{PVAL:8.2e} '
-             )
+    #### patrec = ('{TERM_ID:10} '
+    ####           '{STU_CNT:3} {STU_TOT:3} {STU_RATIO:7.5f} '
+    ####           '{POP_CNT:5} {POP_TOT:5} {POP_RATIO:7.5f} '
+    ####           '{PVAL:8.2e} '
+    ####          )
 
     patpval = "Calculating {N:,} uncorrected p-values using {PFNC}\n"
     ntpval = cx.namedtuple('NtPvalArgs', 'study_count study_n pop_count pop_n')
@@ -82,9 +82,11 @@ class EnrichmentRun():
     def _add_multitest(self, results, pvals_corrected):
         """Add multiple-test correction results to each result record."""
         ntobj = cx.namedtuple('NtM', ' '.join(nt.fieldname for nt in self.objmethods.methods))
+        prtfmt = self._get_prtfmt()
         for rec, pvals_corr in zip(results, zip(*pvals_corrected)):
             ntm = ntobj._make(pvals_corr)
             rec.multitests = ntm
+            rec.prtfmt = prtfmt
 
     def get_pval_uncorr(self, study_in_pop, log=sys.stdout):
         """Calculate the uncorrected pvalues for study items."""
@@ -96,7 +98,6 @@ class EnrichmentRun():
         allterms = set(term2stuids).union(self.term2popids)
         if log:
             log.write(self.patpval.format(N=len(allterms), PFNC=self.pval_obj.name))
-        patfmt = self._get_patfmt()
         for goid in allterms:
             study_items = term2stuids.get(goid, set())
             study_count = len(study_items)
@@ -108,8 +109,7 @@ class EnrichmentRun():
                 pval_args=self.ntpval._make([study_count, study_n, pop_count, pop_n]),
                 pval_uncorr=_calc_pvalue(study_count, study_n, pop_count, pop_n),
                 stu_items=study_items,
-                pop_items=pop_items,
-                pat=patfmt)
+                pop_items=pop_items)
 
             results.append(one_record)
 
@@ -156,11 +156,13 @@ class EnrichmentRun():
         kws_set['assc'] = assc
         return kws_set
 
-    def _get_patfmt(self):
-        """Get pattern format for printing results in a text format."""
-        return '{PAT} {METHODS}\n'.format(
-            PAT=self.patrec,
-            METHODS=self.objmethods.get_patfmt())
+    def _get_prtfmt(self):
+        """Return format pattern for printing this record as text."""
+        if 'prtfmt' not in self.args:
+            return '{FMT} {M}'.format(
+                FMT=' '.join(EnrichmentRecord.fld2fmt.values()),
+                M=self.objmethods.get_patfmt())
+        return self.args['prtfmt']
 
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

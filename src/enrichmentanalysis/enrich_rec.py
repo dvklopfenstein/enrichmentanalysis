@@ -5,7 +5,7 @@ __author__ = "DV Klopfenstein"
 
 # import os
 # import sys
-# import collections as cx
+import collections as cx
 # from enrichmentanalysis.pvalcalc import FisherFactory
 # from enrichmentanalysis.multiple_testing import Methods
 
@@ -13,37 +13,53 @@ __author__ = "DV Klopfenstein"
 class EnrichmentRecord():
     """Enrichment object."""
 
-    pat = ('{TERM_ID} {STU_CNT:3} {STU_TOT:3} {POP_CNT:5} {POP_TOT:5} '
-           '{PVAL:8.2e} {MULT} '
-          )
+    flds = (
+        'TermID',
+        'stu_num',
+        'stu_tot',
+        'stu_rato',
+        'pop_num',
+        'pop_tot',
+        'pop_ratio',
+        'pval_uncorr')
+ 
+    fld2fmt = cx.OrderedDict([
+        ('TermID', '{TermID:10}'),
+        ('stu_num', '{stu_num:3}'),
+        ('stu_tot', '{stu_tot:3}'),
+        ('stu_ratio', '{stu_ratio:7.5f}'),
+        ('pop_num', '{pop_num:5}'),
+        ('pop_tot', '{pop_tot:5}'),
+        ('pop_ratio', '{pop_ratio:7.5f}'),
+        ('pval_uncorr', '{pval_uncorr:8.2e}'),
+    ])
 
-    def __init__(self, termid, pval_args, pval_uncorr, stu_items, pop_items, **kws):
+    def __init__(self, termid, pval_args, pval_uncorr, stu_items, pop_items):
         self.termid = termid
         self.ntpvalargs = pval_args
         self.pval_uncorr = pval_uncorr
         self.stu_items = stu_items
         self.pop_items = pop_items
         self.multitests = None  # namedtuple
-        self.kws = kws
+        self.prtfmt = None
 
     def __str__(self):
         """Return string representation for this record."""
-        pat = self.kws.get('pat', self.pat)
         ntpvals = self.ntpvalargs
         multidct = self.multitests._asdict()
-        return pat.format(
-            TERM_ID=self.termid,
-            STU_CNT=ntpvals.study_count,
-            STU_TOT=ntpvals.study_n,
-            STU_RATIO=float(ntpvals.study_count)/ntpvals.study_n,
-            POP_CNT=ntpvals.pop_count,
-            POP_TOT=ntpvals.pop_n,
-            POP_RATIO=float(ntpvals.pop_count)/ntpvals.pop_n,
-            PVAL=self.pval_uncorr,
-            MULT=self.multitests,
+        if self.prtfmt is None:
+            self.prtfmt = ' '.join(self.fld2fmt.values())
+        return self.prtfmt.format(
+            TermID=self.termid,
+            stu_num=ntpvals.study_count,
+            stu_tot=ntpvals.study_n,
+            stu_ratio=float(ntpvals.study_count)/ntpvals.study_n,
+            pop_num=ntpvals.pop_count,
+            pop_tot=ntpvals.pop_n,
+            pop_ratio=float(ntpvals.pop_count)/ntpvals.pop_n,
+            pval_uncorr=self.pval_uncorr,
             **multidct,
         )
-
 
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

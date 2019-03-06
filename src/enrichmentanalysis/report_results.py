@@ -22,7 +22,7 @@ class ReportResults():
         """Print enrichment results in a text format."""
         prt.write('{HDR}\n'.format(HDR=self._get_hdrs()))
         for rec in self.results:
-            prt.write(str(rec))
+            prt.write('{REC}\n'.format(REC=rec))
 
     def _get_hdrs(self):
         """Get headers for printing results in a text format."""
