@@ -30,6 +30,7 @@ class EnrichmentRecord():
         """Return string representation for this record."""
         pat = self.kws.get('pat', self.pat)
         ntpvals = self.ntpvalargs
+        multidct = self.multitests._asdict()
         return pat.format(
             TERM_ID=self.termid,
             STU_CNT=ntpvals.study_count,
@@ -40,7 +41,7 @@ class EnrichmentRecord():
             POP_RATIO=float(ntpvals.pop_count)/ntpvals.pop_n,
             PVAL=self.pval_uncorr,
             MULT=self.multitests,
-            **self.multitests._asdict(),
+            **multidct,
         )
 
 

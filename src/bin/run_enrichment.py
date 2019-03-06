@@ -27,6 +27,7 @@ from enrichmentanalysis.file_utils import read_ids
 from enrichmentanalysis.file_utils import read_associations
 from enrichmentanalysis.file_utils import prepend
 from enrichmentanalysis.enrich_run import EnrichmentRun
+from enrichmentanalysis.report_results import ReportResults
 
 
 def main():
@@ -49,7 +50,10 @@ def main():
     pval = float(args['--pval']) if args['--pval'] else None
     results = objresults.get_results_cond(pval, args['--pval_field'])
     # objresults.csv_enriched(args['--csv'], token, resource='TOTAL')
-    objrun.prt_results(results)
+    # objrun.prt_results(results)
+    # Print results
+    objrpt = ReportResults(results)  #, objrun.objmethods)
+    objrpt.prt_results()
 
     print('{N} results'.format(N=len(results)))
 

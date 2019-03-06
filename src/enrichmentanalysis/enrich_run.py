@@ -15,7 +15,6 @@ from enrichmentanalysis.enrich_results import EnrichmentResults
 class EnrichmentRun():
     """Do Enrichment."""
 
-    headers = 'TermID     Stu Tot Stu/Tot   Pop   Tot Pop/Tot P-uncorr  '
     patrec = ('{TERM_ID:10} '
               '{STU_CNT:3} {STU_TOT:3} {STU_RATIO:7.5f} '
               '{POP_CNT:5} {POP_TOT:5} {POP_RATIO:7.5f} '
@@ -47,12 +46,6 @@ class EnrichmentRun():
         # self._run_multitest = {
         #     'statsmodels':lambda iargs: self._run_multitest_statsmodels(iargs)}
         self.objmethods = Methods(self.args['methods'], self.args['alpha'])
-
-    def prt_results(self, results, prt=sys.stdout):
-        """Print enrichment results in a text format."""
-        prt.write(self._get_hdrs())
-        for rec in results:
-            prt.write(str(rec))
 
     def run_study(self, study_ids, log=sys.stdout):
         """Run an enrichment."""
@@ -168,10 +161,6 @@ class EnrichmentRun():
         return '{PAT} {METHODS}\n'.format(
             PAT=self.patrec,
             METHODS=self.objmethods.get_patfmt())
-
-    def _get_hdrs(self):
-        """Get headers for printing results in a text format."""
-        return self.headers + self.objmethods.get_headers() + '\n'
 
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.
