@@ -22,7 +22,7 @@ class EnrichmentRecord():
         'pop_tot',
         'pop_ratio',
         'pval_uncorr')
- 
+
     fld2fmt = cx.OrderedDict([
         ('TermID', '{TermID:10}'),
         ('stu_num', '{stu_num:3}'),
@@ -42,6 +42,7 @@ class EnrichmentRecord():
         self.pop_items = pop_items
         self.multitests = None  # namedtuple
         self.prtfmt = None
+        self.ntobj = None
 
     def __str__(self):
         """Return string representation for this record."""
@@ -61,10 +62,22 @@ class EnrichmentRecord():
             **multidct,
         )
 
+    def get_nt_prt(self):
+        """Print namedtuple containing record information."""
+        pass
+
+    def _get_ntobj(self):
+        """Create namedtuple object for enrichment results records."""
+        mults = ' '.join(self.multitests._fields)
+        return cx.namedtuple('ntresults',
+                             ' '.join(self.flds) + \
+                             ' '.join(self.multitests._fields) + \
+                             'stu_items pop_items')
     def _get_prtfmt(self):
         """Create print format."""
         return '{FMT} {M}'.format(
             FMT=' '.join(self.fld2fmt.values()),
             M=' '.join(['{{{M}:8.2e}'.format(M=m) for m in self.multitests._fields]))
+
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

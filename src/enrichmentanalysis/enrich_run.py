@@ -81,12 +81,14 @@ class EnrichmentRun():
 
     def _add_multitest(self, results, pvals_corrected):
         """Add multiple-test correction results to each result record."""
-        ntobj = cx.namedtuple('NtM', ' '.join(nt.fieldname for nt in self.objmethods.methods))
+        ntobj_mult = cx.namedtuple('NtM', ' '.join(nt.fieldname for nt in self.objmethods.methods))
         prtfmt = self._get_prtfmt()
+        ntobj_results = self._get_ntobj()
+        print(ntobj_results._fields)
         for rec, pvals_corr in zip(results, zip(*pvals_corrected)):
-            ntm = ntobj._make(pvals_corr)
-            rec.multitests = ntm
+            rec.multitests = ntobj_mult._make(pvals_corr)
             rec.prtfmt = prtfmt
+            rec.ntobj = ntobj_results
 
     def get_pval_uncorr(self, study_in_pop, log=sys.stdout):
         """Calculate the uncorrected pvalues for study items."""
@@ -155,6 +157,13 @@ class EnrichmentRun():
         kws_set['pop_ids'] = pop_ids
         kws_set['assc'] = assc
         return kws_set
+
+    def _get_ntobj(self):
+        """Create namedtuple object for enrichment results records."""
+        return cx.namedtuple('ntresults', ' '.join([
+                             ' '.join(EnrichmentRecord.flds),
+                             self.objmethods.get_fields(),
+                             'stu_items pop_items']))
 
     def _get_prtfmt(self):
         """Return format pattern for printing this record as text."""

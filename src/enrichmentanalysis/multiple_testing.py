@@ -140,8 +140,12 @@ class Methods():
         return ' '.join(['{{{METHOD}:8.2e}}'.format(METHOD=m.fieldname) for m in self.methods])
 
     def get_headers(self):
-        """Get pattern format for values in each method."""
+        """Get pattern format for column headers in each method."""
         return ' '.join(['{METHOD:<8}'.format(METHOD=m.fieldname) for m in self.methods])
+
+    def get_fields(self):
+        """Get pattern format for method fields."""
+        return ' '.join(['{METHOD}'.format(METHOD=m.fieldname) for m in self.methods])
 
 
 class _Init():

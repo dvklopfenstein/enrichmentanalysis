@@ -49,11 +49,11 @@ def main():
     # Write Pathway Enrichment Analysis to a file
     pval = float(args['--pval']) if args['--pval'] else None
     results = objresults.get_results_cond(pval, args['--pval_field'])
-    # objresults.csv_enriched(args['--csv'], token, resource='TOTAL')
-    # objrun.prt_results(results)
     # Print results
     objrpt = ReportResults(results)  #, objrun.objmethods)
     objrpt.prt_results()
+    if '--csv' in args:
+        objrpt.wrcsv(args['--csv'])
 
     print('{N} results'.format(N=len(results)))
 
