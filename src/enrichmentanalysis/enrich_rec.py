@@ -48,7 +48,7 @@ class EnrichmentRecord():
         ntpvals = self.ntpvalargs
         multidct = self.multitests._asdict()
         if self.prtfmt is None:
-            self.prtfmt = ' '.join(self.fld2fmt.values())
+            self.prtfmt = self._get_prtfmt()
         return self.prtfmt.format(
             TermID=self.termid,
             stu_num=ntpvals.study_count,
@@ -61,5 +61,10 @@ class EnrichmentRecord():
             **multidct,
         )
 
+    def _get_prtfmt(self):
+        """Create print format."""
+        return '{FMT} {M}'.format(
+            FMT=' '.join(self.fld2fmt.values()),
+            M=' '.join(['{{{M}:8.2e}'.format(M=m) for m in self.multitests._fields]))
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.
