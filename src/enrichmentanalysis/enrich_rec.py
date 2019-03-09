@@ -34,55 +34,56 @@ class EnrichmentRecord():
         ('pval_uncorr', '{pval_uncorr:8.2e}'),
     ])
 
-    def __init__(self, termid, pval_args, pval_uncorr, stu_items, pop_items):
+    def __init__(self, termid, ntpval, stu_items, pop_items):
         self.termid = termid
-        self.ntpvalargs = pval_args
-        self.pval_uncorr = pval_uncorr
+        self.ntpval = ntpval
         self.stu_items = stu_items
         self.pop_items = pop_items
+        self.enrichment = self._init_enrichment()  # enriched or purified
         self.multitests = None  # namedtuple
         self.prtfmt = None
         self.ntobj = None
 
     def __str__(self):
         """Return string representation for this record."""
-        ntpvals = self.ntpvalargs
+        ntpval = self.ntpval
         multidct = self.multitests._asdict()
         if self.prtfmt is None:
             self.prtfmt = self._get_prtfmt()
         return self.prtfmt.format(
             TermID=self.termid,
-            stu_num=ntpvals.study_count,
-            stu_tot=ntpvals.study_n,
-            stu_ratio=float(ntpvals.study_count)/ntpvals.study_n,
-            pop_num=ntpvals.pop_count,
-            pop_tot=ntpvals.pop_n,
-            pop_ratio=float(ntpvals.pop_count)/ntpvals.pop_n,
-            pval_uncorr=self.pval_uncorr,
+            stu_num=ntpval.study_cnt,
+            stu_tot=ntpval.study_tot,
+            stu_ratio=ntpval.study_ratio,
+            pop_num=ntpval.pop_cnt,
+            pop_tot=ntpval.pop_tot,
+            pop_ratio=ntpval.pop_ratio,
+            pval_uncorr=ntpval.pval_uncorr,
             **multidct)
 
     def get_nt_prt(self):
         """Print namedtuple containing record information."""
         if self.ntobj is None:
             self.ntobj = self._get_ntobj()
-        ntp = self.ntpvalargs
+        ntp = self.ntpval
         multidct = {m:'{:8.2e}'.format(v) for m, v in self.multitests._asdict().items()}
         return self.ntobj(
             TermID=self.termid,
-            stu_num=ntp.study_count,
-            stu_tot=ntp.study_n,
-            stu_ratio=self.fld2fmt['stu_ratio'].format(stu_ratio=float(ntp.study_count)/ntp.study_n),
-            pop_num=ntp.pop_count,
-            pop_tot=ntp.pop_n,
-            pop_ratio=self.fld2fmt['pop_ratio'].format(pop_ratio=float(ntp.pop_count)/ntp.pop_n),
-            pval_uncorr=self.fld2fmt['pval_uncorr'].format(pval_uncorr=self.pval_uncorr),
+            stu_num=ntp.study_cnt,
+            stu_tot=ntp.study_tot,
+            stu_ratio=self.fld2fmt['stu_ratio'].format(stu_ratio=ntp.study_ratio),
+            pop_num=ntp.pop_cnt,
+            pop_tot=ntp.pop_tot,
+            pop_ratio=self.fld2fmt['pop_ratio'].format(pop_ratio=ntp.pop_ratio),
+            pval_uncorr=self.fld2fmt['pval_uncorr'].format(pval_uncorr=ntp.pval_uncorr),
             stu_items=self._get_items_str(self.stu_items, ';'),
             **multidct)
 
-    def _get_items_str(self, items, divider):
+    @staticmethod
+    def _get_items_str(items, divider):
         """Return one string containing all items."""
         if items:
-            if type(next(iter(items))) == str:
+            if isinstance(next(iter(items)), str):
                 return divider.join(items)
             else:
                 return divider.join(str(e) for e in items)
@@ -90,7 +91,6 @@ class EnrichmentRecord():
 
     def _get_ntobj(self):
         """Create namedtuple object for enrichment results records."""
-        mults = ' '.join(self.multitests._fields)
         return cx.namedtuple('ntresults',
                              ' '.join(self.flds) + \
                              ' '.join(self.multitests._fields) + \
@@ -101,5 +101,10 @@ class EnrichmentRecord():
             FMT=' '.join(self.fld2fmt.values()),
             M=' '.join(['{{{M}:8.2e}'.format(M=m) for m in self.multitests._fields]))
 
+    def _init_enrichment(self):
+        """Mark as 'enriched' or 'purified'."""
+        if self.ntpval.study_tot:
+            return 'e' if self.ntpval.study_ratio > self.ntpval.pop_ratio else 'p'
+        return 'p'
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

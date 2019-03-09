@@ -46,8 +46,8 @@ def main():
     objrun = EnrichmentRun(pop_ids, assc, alpha=float(args['--alpha']), methods=methods)
     objresults = objrun.run_study(stu_ids)
     # Write IDs found and not found to files
-    objresults.wr_found(prepend(base, args['--csv0']))
-    objresults.wr_notfound(prepend(base, args['--csv1']), stu_ids.intersection(pop_ids))
+    objresults.wr_found(prepend(base, args['--ids1']))
+    objresults.wr_notfound(prepend(base, args['--ids0']), stu_ids.intersection(pop_ids))
     # Write Pathway Enrichment Analysis to a file
     pval = float(args['--pval']) if args['--pval'] else None
     results = objresults.get_results_cond(pval, args['--pval_field'])

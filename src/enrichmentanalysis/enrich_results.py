@@ -15,10 +15,9 @@ class EnrichmentResults():
 
     def __init__(self, objearun, study_in_pop, results):
         # Save the population IDs that are in the association
-        self.pop_ids = objearun.pop_ids
-        self.pop_n = objearun.pop_n
+        self.objearun = objearun  # pop_ids pop_tot
         self.study_ids = study_in_pop
-        self.study_n = len(self.study_ids)
+        self.study_tot = len(self.study_ids)
         # Note: It is assumed that all GO IDs, Pathway IDs, etc. in association are valid
         # IDs->(GO|Pathway|etc.)
         self.assc = objearun.assc
@@ -38,7 +37,7 @@ class EnrichmentResults():
     def get_pvals_corr_subset(self, max_pval, pval_field):
         """Return all results for pvalues less than a specified max."""
         results = []
-        for rec in sorted(self.results, key=lambda o:o.pval_uncorr):
+        for rec in sorted(self.results, key=lambda o: o.ntpval.pval_uncorr):
             ntm = rec.multitests
             if getattr(ntm, pval_field) < max_pval:
                 results.append(rec)
@@ -49,7 +48,7 @@ class EnrichmentResults():
     def get_pvals_uncorr_subset(self, max_pval):
         """Return all results for pvalues less than a specified max."""
         results = []
-        for rec in sorted(self.results, key=lambda o:o.pval_uncorr):
+        for rec in sorted(self.results, key=lambda o: o.ntpval.pval_uncorr):
             if rec.pval_uncorr < max_pval:
                 results.append(rec)
             else:
@@ -62,7 +61,7 @@ class EnrichmentResults():
             for study_id in self.study_ids:
                 prt.write('{ID}\n'.format(ID=study_id))
             print('  {N:6} Study IDs found.                WROTE: {TXT}'.format(
-                N=self.study_n, TXT=fout_txt))
+                N=self.study_tot, TXT=fout_txt))
 
     def wr_notfound(self, fout_txt, pop_stu_genes):
         """Write the found study genes."""

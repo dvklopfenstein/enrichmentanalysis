@@ -15,14 +15,11 @@ from enrichmentanalysis.enrich_results import EnrichmentResults
 class EnrichmentRun():
     """Do Enrichment."""
 
-    #### patrec = ('{TERM_ID:10} '
-    ####           '{STU_CNT:3} {STU_TOT:3} {STU_RATIO:7.5f} '
-    ####           '{POP_CNT:5} {POP_TOT:5} {POP_RATIO:7.5f} '
-    ####           '{PVAL:8.2e} '
-    ####          )
-
     patpval = "Calculating {N:,} uncorrected p-values using {PFNC}\n"
-    ntpval = cx.namedtuple('NtPvalArgs', 'study_count study_n pop_count pop_n')
+    pval_flds = ('pval_uncorr',
+                 'study_cnt', 'study_tot', 'study_ratio',
+                 'pop_cnt', 'pop_tot', 'pop_ratio')
+    ntpval = cx.namedtuple('NtPvalArgs', ' '.join(pval_flds))
     kw_dict = {
         'alpha':0.05,
         'methods':('fdr_bh'),
@@ -37,7 +34,7 @@ class EnrichmentRun():
         self.pop_ids = population_ids.intersection(set(associations))
         self._prt_perc_found('population', 'assocation', self.pop_ids, population_ids)
         assert self.pop_ids, "NO POPULATION IDs IN ASSOCIATIONS: {A}".format(A=self.pop_ids)
-        self.pop_n = len(self.pop_ids)
+        self.pop_tot = len(self.pop_ids)
         # Note: It is assumed that all GO IDs, Pathway IDs, etc. in association are valid
         # IDs->(GO|Pathway|etc.)
         self.assc = {a_id:terms for a_id, terms in associations.items() if a_id in self.pop_ids}
@@ -57,7 +54,7 @@ class EnrichmentRun():
         # Uncorrected P-values
         results = self.get_pval_uncorr(study_in_pop, log)
         # Corrected P-values
-        pvals_uncorr = [o.pval_uncorr for o in results]
+        pvals_uncorr = [o.ntpval.pval_uncorr for o in results]
         pvals_corrected = self.objmethods.run_multitest_corr(pvals_uncorr, log)
         # pvals_corr = self.objmethods.run_multipletests(pvals_uncorr)
         self._add_multitest(results, pvals_corrected)
@@ -67,7 +64,7 @@ class EnrichmentRun():
     def _chk_genes(self, study):
         """Check gene sets."""
         stu_n = len(study)
-        if self.pop_n < stu_n:
+        if self.pop_tot < stu_n:
             exit("\nERROR: The study file contains more elements than the population file. "
                  "Please check that the study file is a subset of the population file.\n")
         # check the fraction of genomic ids that overlap between study and population
@@ -84,7 +81,7 @@ class EnrichmentRun():
         ntobj_mult = cx.namedtuple('NtM', ' '.join(nt.fieldname for nt in self.objmethods.methods))
         prtfmt = self._get_prtfmt()
         ntobj_results = self._get_ntobj()
-        print(ntobj_results._fields)
+        # print(ntobj_results._fields)
         for rec, pvals_corr in zip(results, zip(*pvals_corrected)):
             rec.multitests = ntobj_mult._make(pvals_corr)
             rec.prtfmt = prtfmt
@@ -93,7 +90,7 @@ class EnrichmentRun():
     def get_pval_uncorr(self, study_in_pop, log=sys.stdout):
         """Calculate the uncorrected pvalues for study items."""
         results = []
-        pop_n, study_n = self.pop_n, len(study_in_pop)
+        pop_tot, study_tot = self.pop_tot, len(study_in_pop)
 
         _calc_pvalue = self.pval_obj.calc_pvalue
         term2stuids = self._get_term2ids(study_in_pop)
@@ -102,14 +99,20 @@ class EnrichmentRun():
             log.write(self.patpval.format(N=len(allterms), PFNC=self.pval_obj.name))
         for goid in allterms:
             study_items = term2stuids.get(goid, set())
-            study_count = len(study_items)
+            study_cnt = len(study_items)
             pop_items = self.term2popids.get(goid, set())
-            pop_count = len(pop_items)
+            pop_cnt = len(pop_items)
 
             one_record = EnrichmentRecord(
                 goid,
-                pval_args=self.ntpval._make([study_count, study_n, pop_count, pop_n]),
-                pval_uncorr=_calc_pvalue(study_count, study_n, pop_count, pop_n),
+                ntpval=self.ntpval(
+                    pval_uncorr=_calc_pvalue(study_cnt, study_tot, pop_cnt, pop_tot),
+                    study_cnt=study_cnt,
+                    study_tot=study_tot,
+                    study_ratio=float(study_cnt)/study_tot,
+                    pop_cnt=pop_cnt,
+                    pop_tot=pop_tot,
+                    pop_ratio=float(pop_cnt)/pop_tot),
                 stu_items=study_items,
                 pop_items=pop_items)
 
@@ -161,9 +164,9 @@ class EnrichmentRun():
     def _get_ntobj(self):
         """Create namedtuple object for enrichment results records."""
         return cx.namedtuple('ntresults', ' '.join([
-                             ' '.join(EnrichmentRecord.flds),
-                             self.objmethods.get_fields(),
-                             'stu_items']))
+            ' '.join(EnrichmentRecord.flds),
+            self.objmethods.get_fields(),
+            'stu_items']))
 
     def _get_prtfmt(self):
         """Return format pattern for printing this record as text."""
