@@ -12,6 +12,13 @@ from scipy import stats
 class PvalCalcBase(object):
     """Base class for initial p-value calculations."""
 
+    pval_flds = ('pval_uncorr',
+                 'study_cnt', 'study_tot', 'study_ratio',
+                 'pop_cnt', 'pop_tot', 'pop_ratio',
+                 'enrichment')
+
+    ntpval = cx.namedtuple('NtPvalArgs', ' '.join(pval_flds))
+
     def __init__(self, name, pval_fnc, log):
         self.log = log
         self.name = name
@@ -23,6 +30,27 @@ class PvalCalcBase(object):
             SCNT=study_count, STOT=study_n, PCNT=pop_count, PTOT=pop_n)
         raise Exception("NOT IMPLEMENTED: {FNC_CALL} using {FNC}.".format(
             FNC_CALL=fnc_call, FNC=self.pval_fnc))
+
+    def get_nt(self, study_cnt, study_tot, pop_cnt, pop_tot):
+        """Return P-value namedtuple."""
+        study_ratio = float(study_cnt)/study_tot
+        pop_ratio = float(pop_cnt)/pop_tot
+        return self.ntpval(
+            pval_uncorr=self.calc_pvalue(study_cnt, study_tot, pop_cnt, pop_tot),
+            study_cnt=study_cnt,
+            study_tot=study_tot,
+            study_ratio=study_ratio,
+            pop_cnt=pop_cnt,
+            pop_tot=pop_tot,
+            pop_ratio=pop_ratio,
+            enrichment=self.get_enrichment(study_tot, study_ratio, pop_ratio))
+
+    @staticmethod
+    def get_enrichment(study_tot, study_ratio, pop_ratio):
+        """Mark as 'enriched' or 'purified'."""
+        if study_tot:
+            return 'e' if study_ratio > pop_ratio else 'p'
+        return 'p'
 
 
 class FisherScipyStats(PvalCalcBase):

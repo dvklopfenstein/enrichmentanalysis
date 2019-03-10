@@ -54,11 +54,11 @@ def main():
     # Print results
     objrpt = ReportResults(results)  #, objrun.objmethods)
     objrpt.prt_results()
-    if '--xlsx' in args:
+    if args['--xlsx']:
         objrpt.wrxlsx(args['--xlsx'])
-    if '--tsv' in args:
+    if args['--tsv']:
         objrpt.wrtsv(args['--tsv'])
-    if '--csv' in args:
+    if args['--csv']:
         objrpt.wrcsv(args['--csv'])
 
     print('{N} results'.format(N=len(results)))

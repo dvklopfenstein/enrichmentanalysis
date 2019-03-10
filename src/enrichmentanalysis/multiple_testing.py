@@ -27,7 +27,6 @@ class MethodsAll():
             'fdr_by',         #  7) FDR Benjamini/Yekutieli (negative)
             'fdr_tsbh',       #  8) FDR 2-stage Benjamini-Hochberg (non-negative)
             'fdr_tsbky',      #  9) FDR 2-stage Benjamini-Krieger-Yekutieli (non-negative)
-            #'fdr_gbs',        # 10) FDR adaptive Gavrilov-Benjamini-Sarkar
             )),
     ]
     prefixes = {'statsmodels':'sm_'}
@@ -84,30 +83,31 @@ class Methods():
             usr_methods = ['fdr_bh']
         self.methods = _ini.get_methods(usr_methods)
 
-    def run_multitest_corr(self, pvals_uncorr, log):
+    def run_multitest_corr(self, ntpvals_uncorr, log):
         """Do multiple-test corrections on uncorrected pvalues."""
         # ntobj = cx.namedtuple("ntobj", "results pvals_uncorr alpha nt_method study")
         pvals_corrected = []
+        pvals_uncorr = [nt.pval_uncorr for nt in ntpvals_uncorr]
         for nt_method in self.methods:  # usrmethod_flds:
             # NtMethodInfo(source='statsmodels', method='bonferroni', fieldname='bonferroni'))
             # NtMethodInfo(source='statsmodels', method='fdr_bh', fieldname='fdr_bh'))
-            #### ntmt = ntobj(results, pvals_uncorr, self.alpha, nt_method, study)
-            #### self._run_multitest[nt_method.source](ntmt)
             ntres = self._run_multitest_statsmodels(pvals_uncorr, nt_method.method)
             # attr_mult = "p_{M}".format(M=self.get_fieldname(nt_method.source, nt_method.method))
             pvals_corrected.append(ntres.pvals_corrected)
             if log is not None:
-                self._log_multitest_corr(log, ntres.pvals_corrected, nt_method)
+                self._log_multitest_corr(log, ntres, ntpvals_uncorr, nt_method)
         assert len(pvals_corrected) == len(self.methods)
         return pvals_corrected
 
-    def _log_multitest_corr(self, log, pvals_corr, nt_method):
+    def _log_multitest_corr(self, log, ntres, ntpvals_uncorr, nt_method):
         """Print information regarding multitest correction results."""
         _alpha = self.alpha
-        sig_cnt = sum(1 for m in pvals_corr if m < _alpha)
-        log.write("{N:8,} terms found significant after ".format(N=sig_cnt))
-        log.write("multitest correction: ")
-        log.write("ALPHA({A}) {MSRC} {METHOD}\n".format(
+        eps = [nt.enrichment for pf, nt in zip(ntres.reject_lst, ntpvals_uncorr) if pf]
+        sig_cnt = len(eps)
+        ctr = cx.Counter(eps)
+        log.write("{N:8,} terms ".format(N=sig_cnt))
+        log.write('({E:3} enriched + {P:3} purified) '.format(E=ctr['e'], P=ctr['p']))
+        log.write("found significant with alpha({A}): {MSRC} {METHOD}\n".format(
             A=self.alpha, MSRC=nt_method.source, METHOD=nt_method.method))
 
     def _run_multitest_statsmodels(self, pvals_uncorr, method):

@@ -26,6 +26,11 @@ class EnrichmentResults():
         # Results
         self.results = results
 
+    @staticmethod
+    def sortby_eaobj(obj):
+        """Sortby function for sorted."""
+        return [obj.ntpval.enrichment, obj.ntpval.pval_uncorr]
+
     def get_results_cond(self, max_pval, pval_field):
         """Get the subset of results which are under a specified p-value."""
         if max_pval is None:
@@ -34,10 +39,12 @@ class EnrichmentResults():
             return self.get_pvals_uncorr_subset(max_pval)
         return self.get_pvals_corr_subset(max_pval, pval_field)
 
-    def get_pvals_corr_subset(self, max_pval, pval_field):
+    def get_pvals_corr_subset(self, max_pval, pval_field, sortby=None):
         """Return all results for pvalues less than a specified max."""
         results = []
-        for rec in sorted(self.results, key=lambda o: o.ntpval.pval_uncorr):
+        if sortby is None:
+            sortby = self.sortby_eaobj
+        for rec in sorted(self.results, key=sortby):
             ntm = rec.multitests
             if getattr(ntm, pval_field) < max_pval:
                 results.append(rec)
@@ -45,10 +52,12 @@ class EnrichmentResults():
                 return results
         return results
 
-    def get_pvals_uncorr_subset(self, max_pval):
+    def get_pvals_uncorr_subset(self, max_pval, sortby=None):
         """Return all results for pvalues less than a specified max."""
         results = []
-        for rec in sorted(self.results, key=lambda o: o.ntpval.pval_uncorr):
+        if sortby is None:
+            sortby = self.sortby_eaobj
+        for rec in sorted(self.results, key=sortby):
             if rec.pval_uncorr < max_pval:
                 results.append(rec)
             else:

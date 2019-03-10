@@ -39,7 +39,6 @@ class EnrichmentRecord():
         self.ntpval = ntpval
         self.stu_items = stu_items
         self.pop_items = pop_items
-        self.enrichment = self._init_enrichment()  # enriched or purified
         self.multitests = None  # namedtuple
         self.prtfmt = None
         self.ntobj = None
@@ -100,11 +99,5 @@ class EnrichmentRecord():
         return '{FMT} {M}'.format(
             FMT=' '.join(self.fld2fmt.values()),
             M=' '.join(['{{{M}:8.2e}'.format(M=m) for m in self.multitests._fields]))
-
-    def _init_enrichment(self):
-        """Mark as 'enriched' or 'purified'."""
-        if self.ntpval.study_tot:
-            return 'e' if self.ntpval.study_ratio > self.ntpval.pop_ratio else 'p'
-        return 'p'
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

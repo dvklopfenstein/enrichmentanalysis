@@ -16,10 +16,6 @@ class EnrichmentRun():
     """Do Enrichment."""
 
     patpval = "Calculating {N:,} uncorrected p-values using {PFNC}\n"
-    pval_flds = ('pval_uncorr',
-                 'study_cnt', 'study_tot', 'study_ratio',
-                 'pop_cnt', 'pop_tot', 'pop_ratio')
-    ntpval = cx.namedtuple('NtPvalArgs', ' '.join(pval_flds))
     kw_dict = {
         'alpha':0.05,
         'methods':('fdr_bh'),
@@ -54,8 +50,8 @@ class EnrichmentRun():
         # Uncorrected P-values
         results = self.get_pval_uncorr(study_in_pop, log)
         # Corrected P-values
-        pvals_uncorr = [o.ntpval.pval_uncorr for o in results]
-        pvals_corrected = self.objmethods.run_multitest_corr(pvals_uncorr, log)
+        ntpvals_uncorr = [o.ntpval for o in results]
+        pvals_corrected = self.objmethods.run_multitest_corr(ntpvals_uncorr, log)
         # pvals_corr = self.objmethods.run_multipletests(pvals_uncorr)
         self._add_multitest(results, pvals_corrected)
         objres = EnrichmentResults(self, study_in_pop, results)
@@ -92,7 +88,7 @@ class EnrichmentRun():
         results = []
         pop_tot, study_tot = self.pop_tot, len(study_in_pop)
 
-        _calc_pvalue = self.pval_obj.calc_pvalue
+        _get_ntpval = self.pval_obj.get_nt
         term2stuids = self._get_term2ids(study_in_pop)
         allterms = set(term2stuids).union(self.term2popids)
         if log:
@@ -105,14 +101,7 @@ class EnrichmentRun():
 
             one_record = EnrichmentRecord(
                 goid,
-                ntpval=self.ntpval(
-                    pval_uncorr=_calc_pvalue(study_cnt, study_tot, pop_cnt, pop_tot),
-                    study_cnt=study_cnt,
-                    study_tot=study_tot,
-                    study_ratio=float(study_cnt)/study_tot,
-                    pop_cnt=pop_cnt,
-                    pop_tot=pop_tot,
-                    pop_ratio=float(pop_cnt)/pop_tot),
+                ntpval=_get_ntpval(study_cnt, study_tot, pop_cnt, pop_tot),
                 stu_items=study_items,
                 pop_items=pop_items)
 
