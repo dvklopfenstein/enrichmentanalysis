@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Enrichment analysis with user-provided population and associations.
 
 Usage:
@@ -35,7 +35,7 @@ from enrichmentanalysis.report_results import ReportResults
 def main():
     """Enrichment analysis with user-provided population and associations."""
     args = docopt(__doc__)
-    print(args)
+    #print(args)
 
     base = args['--base'] if args['--base'] else None
     stu_ids = read_ids(args['<study_ids>'])

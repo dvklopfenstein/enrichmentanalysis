@@ -1,9 +1,8 @@
-"""Enrichment object."""
+"""Holds population set, associations, and methods for one or more enrichment analyses."""
 
 __copyright__ = "Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved."
 __author__ = "DV Klopfenstein"
 
-# import os
 import sys
 import collections as cx
 from enrichmentanalysis.pvalcalc import FisherFactory
@@ -13,7 +12,7 @@ from enrichmentanalysis.enrich_results import EnrichmentResults
 
 
 class EnrichmentRun():
-    """Do Enrichment."""
+    """Holds population set, associations, and methods for one or more enrichment analyses."""
 
     patpval = "Calculating {N:,} uncorrected p-values using {PFNC}\n"
     kw_dict = {
@@ -41,7 +40,7 @@ class EnrichmentRun():
         self.objmethods = Methods(self.args['methods'], self.args['alpha'])
 
     def run_study(self, study_ids, log=sys.stdout):
-        """Run an enrichment."""
+        """Run an enrichment analysis."""
         results = []
         # Get study IDs which which are present in the population
         study_in_pop = self._get_study_ids(study_ids, log)
@@ -52,7 +51,6 @@ class EnrichmentRun():
         # Corrected P-values
         ntpvals_uncorr = [o.ntpval for o in results]
         pvals_corrected = self.objmethods.run_multitest_corr(ntpvals_uncorr, log)
-        # pvals_corr = self.objmethods.run_multipletests(pvals_uncorr)
         self._add_multitest(results, pvals_corrected)
         objres = EnrichmentResults(self, study_in_pop, results)
         return objres

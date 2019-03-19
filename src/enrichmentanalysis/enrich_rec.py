@@ -14,6 +14,7 @@ class EnrichmentRecord():
     """Enrichment object."""
 
     flds = (
+        'enrichment',
         'TermID',
         'stu_num',
         'stu_tot',
@@ -24,6 +25,7 @@ class EnrichmentRecord():
         'pval_uncorr')
 
     fld2fmt = cx.OrderedDict([
+        ('enrichment', '{enrichment}'),
         ('TermID', '{TermID:10}'),
         ('stu_num', '{stu_num:3}'),
         ('stu_tot', '{stu_tot:3}'),
@@ -50,6 +52,7 @@ class EnrichmentRecord():
         if self.prtfmt is None:
             self.prtfmt = self._get_prtfmt()
         return self.prtfmt.format(
+            enrichment=ntpval.enrichment,
             TermID=self.termid,
             stu_num=ntpval.study_cnt,
             stu_tot=ntpval.study_tot,
@@ -67,6 +70,7 @@ class EnrichmentRecord():
         ntp = self.ntpval
         multidct = {m:'{:8.2e}'.format(v) for m, v in self.multitests._asdict().items()}
         return self.ntobj(
+            enrichment=ntp.enrichment,
             TermID=self.termid,
             stu_num=ntp.study_cnt,
             stu_tot=ntp.study_tot,
@@ -96,8 +100,10 @@ class EnrichmentRecord():
                              'stu_items')
     def _get_prtfmt(self):
         """Create print format."""
+        # pylint: disable=bad-format-string
         return '{FMT} {M}'.format(
             FMT=' '.join(self.fld2fmt.values()),
             M=' '.join(['{{{M}:8.2e}'.format(M=m) for m in self.multitests._fields]))
+
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

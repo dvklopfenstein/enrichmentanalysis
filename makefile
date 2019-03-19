@@ -1,7 +1,9 @@
 # Enrichemt Analysis
+PY := python3
 
 run_go:
-	src/bin/run_enrichment.py data/exgo/study data/exgo/population data/exgo/association -m fdr_bh --pval=0.05 --pval_field=fdr_bh
+	@echo RUN AN ENRICHMENT ANALYSIS EXAMPLE
+	$(PY) src/bin/run_enrichment.py data/exgo/study data/exgo/population data/exgo/association -m fdr_bh --pval=0.05 --pval_field=fdr_bh
 
 run_m:
 	src/bin/run_enrichment.py data/exgo/study data/exgo/population data/exgo/association -m bonferroni,sidak,holm-sidak,holm,simes-hochberg,hommel,fdr_bh,fdr_by,fdr_tsbh,fdr_tsbky
@@ -47,6 +49,7 @@ clean_pyc:
 	find . -name \*.st\*p | xargs rm -f
 
 clean:
+	rm -f enrichment.xlsx
 	rm -f *.csv
 	rm -f tmp_pylint
 

@@ -3,11 +3,7 @@
 __copyright__ = "Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved."
 __author__ = "DV Klopfenstein"
 
-# import os
 import sys
-# import collections as cx
-# from enrichmentanalysis.pvalcalc import FisherFactory
-# from enrichmentanalysis.multiple_testing import Methods
 from enrichmentanalysis.wr_tbl import wr_xlsx
 from enrichmentanalysis.wr_tbl import wr_tsv
 
@@ -15,9 +11,10 @@ from enrichmentanalysis.wr_tbl import wr_tsv
 class ReportResults():
     """Report results in various formats."""
 
-    headers = 'TermID     Stu Tot Stu/Tot   Pop   Tot Pop/Tot P-uncorr  '
+    headers = 'ep TermID    Stu Tot Stu/Tot   Pop   Tot Pop/Tot P-uncorr'
 
     fld2col_widths_dflts = {
+        'enrichment': 2,
         'TermID': 12,
         'stu_num': 4,
         'stu_tot': 5,
