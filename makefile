@@ -27,7 +27,8 @@ vim_:
 	src/enrichmentanalysis/multiple_testing.py \
 	src/enrichmentanalysis/pvalcalc.py \
 	src/enrichmentanalysis/wr_tbl.py \
-	src/enrichmentanalysis/wr_tbl_class.py
+	src/enrichmentanalysis/wr_tbl_class.py \
+	src/enrichmentanalysis/cli.py
 
 
 # --------------------------------------------------------------------------------
