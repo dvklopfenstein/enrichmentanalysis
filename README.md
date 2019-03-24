@@ -5,6 +5,8 @@ Do enrichment analysis on anything if you provide:
   * IDs of the study set
   * Associations between the IDs and the terms of interest
 
+[Example data](data/exgo)
+
 ## To Cite
 This code is a generalized version of selected code from the [GOATOOLS](https://github.com/tanghaibao/goatools) repository,
 which is used to run gene ontology enrichment analysis. 
