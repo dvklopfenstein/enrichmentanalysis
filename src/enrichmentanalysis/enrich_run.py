@@ -39,7 +39,7 @@ class EnrichmentRun():
         #     'statsmodels':lambda iargs: self._run_multitest_statsmodels(iargs)}
         self.objmethods = Methods(self.args['methods'], self.args['alpha'])
 
-    def run_study(self, study_ids, log=sys.stdout):
+    def run_study(self, study_ids, study_name, log=sys.stdout):
         """Run an enrichment analysis."""
         results = []
         # Get study IDs which which are present in the population
@@ -52,7 +52,7 @@ class EnrichmentRun():
         ntpvals_uncorr = [o.ntpval for o in results]
         pvals_corrected = self.objmethods.run_multitest_corr(ntpvals_uncorr, log)
         self._add_multitest(results, pvals_corrected)
-        objres = EnrichmentResults(self, study_in_pop, results)
+        objres = EnrichmentResults(self, study_in_pop, results, study_name)
         return objres
 
     def _chk_genes(self, study):

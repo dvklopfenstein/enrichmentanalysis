@@ -44,7 +44,7 @@ def main():
     # Run Enrichment
     stu_dct = read_ids(args['<study_ids>'])
     stu_ids = stu_dct['ids']
-    objresults = objrun.run_study(stu_ids)  # EnrichmentResults
+    objresults = objrun.run_study(stu_ids, stu_dct.get('name'))  # EnrichmentResults
     # Write IDs found and not found to files
     base = args['--base'] if args['--base'] else None
     objresults.wr_found(prepend(base, args['--ids1']))

@@ -13,7 +13,8 @@ __author__ = "DV Klopfenstein"
 class EnrichmentResults():
     """Store and manage enrichment results."""
 
-    def __init__(self, objearun, study_in_pop, results):
+    def __init__(self, objearun, study_in_pop, results, name):
+        self.name = name
         # Save the population IDs that are in the association
         self.objearun = objearun  # pop_ids pop_tot
         self.study_ids = study_in_pop
