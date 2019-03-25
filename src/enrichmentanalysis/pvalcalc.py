@@ -33,8 +33,8 @@ class PvalCalcBase(object):
 
     def get_nt(self, study_cnt, study_tot, pop_cnt, pop_tot):
         """Return P-value namedtuple."""
-        study_ratio = float(study_cnt)/study_tot
-        pop_ratio = float(pop_cnt)/pop_tot
+        study_ratio = float(study_cnt)/study_tot if study_tot != 0 else 0.0
+        pop_ratio = float(pop_cnt)/pop_tot if pop_tot != 0 else 0.0
         return self.ntpval(
             pval_uncorr=self.calc_pvalue(study_cnt, study_tot, pop_cnt, pop_tot),
             study_cnt=study_cnt,

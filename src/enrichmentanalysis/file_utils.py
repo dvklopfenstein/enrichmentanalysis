@@ -10,15 +10,24 @@ import collections as cx
 def read_ids(file_txt):
     """Read study or population IDs. Return set of IDs."""
     ids = set()
+    study_name = None
     if not os.path.exists(file_txt):
         return ids
     with open(file_txt) as ifstrm:
         for line in ifstrm:
-            lst = line.split()
-            if lst:
-                ids.add(lst[0])
-        print('  {N:6,} IDs READ: {FILE}'.format(N=len(ids), FILE=file_txt))
-    return ids
+            if line[0] != '#':
+                lst = line.split()
+                if lst:
+                    ids.add(lst[0])
+            elif study_name is not None:
+                study_name = line[1:].strip()
+    ret = {'ids':ids}
+    msg = '  {N:6,} IDs READ: {FILE}'.format(N=len(ids), FILE=file_txt)
+    if study_name is not None:
+        ret['name'] = study_name
+        msg += 'NAME({NAME})'.format(NAME=study_name)
+    print(msg)
+    return ret
 
 def read_associations(assoc_fn):
     """
