@@ -1,4 +1,4 @@
-# Enrichemt Analysis
+# Enrichemt AnalysisA A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A 
 PY := python3
 
 run_go:
@@ -28,7 +28,8 @@ vim_:
 	src/enrichmentanalysis/pvalcalc.py \
 	src/enrichmentanalysis/wr_tbl.py \
 	src/enrichmentanalysis/wr_tbl_class.py \
-	src/enrichmentanalysis/cli.py
+	src/enrichmentanalysis/cli.py \
+	src/tests/test_enrichment0.py
 
 
 # --------------------------------------------------------------------------------

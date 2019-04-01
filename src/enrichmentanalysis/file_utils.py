@@ -4,23 +4,56 @@ __copyright__ = "Copyright (C) 2018-2019, DV Klopfenstein, H Tang. All rights re
 __author__ = "various"
 
 import os
+import sys
+import numpy as np
 import collections as cx
 
 
-def read_ids(file_txt):
+# https://docs.scipy.org/doc/numpy/user/basics.io.genfromtxt.html
+
+def read_notfound(fin_txt, prt=sys.stdout):
+    """Read Reactome Pathway Analysis file containing IDs that are not found."""
+    rows = _read_genfromtxt(fin_txt, 'not found', str, prt)[1:]
+    #print('RRRRRRRRRRRRR', rows)
+    return [int(v) if v.isdigit() else v for v in rows]
+
+def read_mapping(fin_csv, prt=sys.stdout):
+    """Read Reactome Pathway Analysis file containing study IDs that are mapped."""
+    rows = _read_genfromtxt(fin_csv, 'mapped   ', str, prt)
+    if len(rows.shape) == 2:
+        ntobj = cx.namedtuple('nt', [r.replace(' identifier', '') for r in rows[0]])
+        # print('MMMMMMMMMMMMMMMM', ntobj._fields, rows[1])
+        nts = [ntobj._make([int(v) if v.isdigit() else v for v in r]) for r in rows[1:]]
+        # print(nts)
+        return {nt.Submitted:nt for nt in nts}
+    return {}
+
+def _read_genfromtxt(fin_csv, desc, dtype, prt=sys.stdout):
+    """Read Reactome Pathway Analysis file containing study IDs that are mapped."""
+    if os.path.exists(fin_csv):
+        ids = np.genfromtxt(fin_csv, dtype=dtype, delimiter=',', comments=None)
+        if prt:
+            prt.write('{N:4} IDs {DESC} WROTE: {CSV}\n'.format(
+                N=len(ids), DESC=desc, CSV=fin_csv))
+        return ids
+    prt.write('   - IDs {DESC}    NO: {CSV}\n'.format(DESC=desc, CSV=fin_csv))
+    return np.empty([0])
+
+def read_ids(file_txt, sep=None):
     """Read study or population IDs. Return set of IDs."""
+    if file_txt is None or not os.path.exists(file_txt):
+        return {}
     ids = set()
     study_name = None
-    if not os.path.exists(file_txt):
-        return ids
     with open(file_txt) as ifstrm:
         for line in ifstrm:
-            if line[0] != '#':
-                lst = line.split()
+            if line[0] != '#' and line[:9] != 'Not found':
+                lst = line.split(sep)
                 if lst:
                     ids.add(lst[0])
-            elif study_name is not None:
+            elif study_name is not None and line[0] == '#':
                 study_name = line[1:].strip()
+    ids = set(int(v) if v.isdigit() else v for v in ids)
     ret = {'ids':ids}
     msg = '  {N:6,} IDs READ: {FILE}'.format(N=len(ids), FILE=file_txt)
     if study_name is not None:
@@ -77,5 +110,37 @@ def prepend(file_prefix, fout):
     fdir, fname = os.path.split(fout)
     return os.path.join(fdir, '{PRE}{FILE}'.format(PRE=file_prefix, FILE=fname))
 
+def clean_args(args):
+    """Clean keys: remove '-', '--', '<', '>'."""
+    kws = {}
+    for key, val in args.items():
+        if key[0] == '-':
+            key = key[1:]
+        if key[0] == '-':
+            key = key[1:]
+        if key[0] == '<':
+            key = key[1:]
+        if key[-1] == '>':
+            key = key[:-1]
+        if val is not None:
+            kws[key] = val
+    return {k:v for k, v in kws.items() if v}
+
+def get_fout_pdf(args):
+    """Get the name of the pdf file where results are written."""
+    if 'pdfname' in args:
+        return args['pdfname']
+    if 'pdf' in args and args['pdf']:
+        return '{BASE}.pdf'.format(BASE=os.path.splitext(args['csv'])[0])
+    raise RuntimeError('PDF FILENAME NOT SPECFIED')
+
+def get_kws_analyse(args):
+    """Get keyword args used when running a pathway analysis."""
+    kws = {}
+    if 'interactors' in args and args['interactors']:
+        kws['interactors'] = True
+    if 'excludeDisease' in args and args['excludeDisease']:
+        kws['includeDisease'] = False
+    return kws
 
 # Copyright (C) 2018-2019, DV Klopfenstein, H Tang. All rights reserved.

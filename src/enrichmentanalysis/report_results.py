@@ -47,13 +47,15 @@ class ReportResults():
             self.nts = self.get_nts()
         kws = {}
         wr_tsv(fout_tsv, self.nts, **kws)
-        print('  WROTE: {TSV}'.format(TSV=fout_tsv))
+        #### print('  WROTE: {TSV}'.format(TSV=fout_tsv))
 
     def wrcsv(self, fout_csv):
         """Write results into csv file."""
         if self.nts is None:
             self.nts = self.get_nts()
-        print('  WROTE: {CSV}'.format(CSV=fout_csv))
+        kws = {'sep':','}
+        wr_tsv(fout_csv, self.nts, **kws)
+        #### print('  WROTE: {CSV}'.format(CSV=fout_csv))
 
     def wrxlsx(self, fout_xlsx):
         """Write results into xlsx file."""
@@ -63,7 +65,7 @@ class ReportResults():
             'fld2col_widths': self.fld2col_widths_dflts,
         }
         wr_xlsx(fout_xlsx, self.nts, **kws)
-        print('  WROTE: {XLSX}'.format(XLSX=fout_xlsx))
+        #### print('  WROTE: {XLSX}'.format(XLSX=fout_xlsx))
 
     def get_nts(self):
         """Return namedtuples associated with results."""
