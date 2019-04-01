@@ -14,8 +14,15 @@ import collections as cx
 def read_notfound(fin_txt, prt=sys.stdout):
     """Read Reactome Pathway Analysis file containing IDs that are not found."""
     rows = _read_genfromtxt(fin_txt, 'not found', str, prt)[1:]
-    #print('RRRRRRRRRRRRR', rows)
-    return [int(v) if v.isdigit() else v for v in rows]
+    if len(rows) != 0:
+        if isinstance(next(iter(rows)), np.ndarray):
+            def _get_val(val):
+                """Return ID as an int or a string."""
+                return int(val) if val.isdigit() else val
+            return [_get_val(v[0]) for v in rows]
+        else:
+            return [int(v) if v.isdigit() else v for v in rows]
+    return []
 
 def read_mapping(fin_csv, prt=sys.stdout):
     """Read Reactome Pathway Analysis file containing study IDs that are mapped."""
@@ -142,5 +149,6 @@ def get_kws_analyse(args):
     if 'excludeDisease' in args and args['excludeDisease']:
         kws['includeDisease'] = False
     return kws
+
 
 # Copyright (C) 2018-2019, DV Klopfenstein, H Tang. All rights reserved.
