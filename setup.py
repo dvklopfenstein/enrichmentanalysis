@@ -12,7 +12,7 @@ def get_long_description():
 
 setup(
     name='enrichmentanalysis_dvklopfenstein',
-    version='0.0.1',
+    version='0.0.2',
     author='DV Klopfenstein',
     author_email='dvklopfenstein@gmail.com',
     long_description=get_long_description(),
@@ -34,5 +34,5 @@ setup(
     ],
     url='http://github.com/dvklopfenstein/enrichmentanalysis',
     description='Perform enrichment analysis on any IDs and associations',
-    install_requires=['timeit', 'datetime', 'collections'],
+    install_requires=['datetime'],
 )

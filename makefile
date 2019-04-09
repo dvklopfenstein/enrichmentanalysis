@@ -41,6 +41,9 @@ dist_archive:
 clean_dist:
 	rm -rf dist build enrichmentanalysis.egg-info
 
+vim_pip:
+	vim -p setup.py src/enrichmentanalysis/__init__.py
+
 # --------------------------------------------------------------------------------
 upload_pypi_test:
 	python setup.py register -r pypitest
