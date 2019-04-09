@@ -11,7 +11,7 @@ def get_long_description():
         long_description = fh.read()
 
 setup(
-    name='enrichmentanalysis',
+    name='enrichmentanalysis_dvklopfenstein',
     version='0.0.1',
     author='DV Klopfenstein',
     author_email='dvklopfenstein@gmail.com',
