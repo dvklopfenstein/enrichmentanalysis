@@ -5,7 +5,7 @@ Do enrichment analysis on anything if you provide:
   * IDs of the study set
   * Associations between the IDs and the terms of interest
 
-[Example data](data/exgo)
+[Example data](https://github.com/dvklopfenstein/enrichmentanalysis/tree/master/data/exgo)
 
 ## The enrichment analysis steps performed by this repo's code
   1. Generate pvalues using Fishers exact test
