@@ -38,9 +38,7 @@ dist_archive:
 	python3 setup.py sdist bdist_wheel
 	find dist
 
-clean_dist:
-	rm -rf dist build enrichmentanalysis.egg-info
-
+# Modify version in src/enrichmentanalysis/__init__.py
 vim_pip:
 	vim -p setup.py setup_conda.py src/enrichmentanalysis/__init__.py makefile
 
@@ -52,6 +50,9 @@ wheel:
 upload:
 	python3 -m twine upload dist/* --verbose
 
+conda_dist:
+	python setup_conda.py bdist_conda
+
 # Install listed in requirements.txt
 install_req:
 	while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt
@@ -60,6 +61,9 @@ install_req:
 upload_pypi_test:
 	python setup.py register -r pypitest
 	python setup.py sdist upload -r pypitest
+
+clean_dist:
+	rm -rf dist build enrichmentanalysis.egg-info
 
 clean_pyc:
 	find . -name \*.pyc | xargs rm -f

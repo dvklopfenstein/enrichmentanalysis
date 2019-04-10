@@ -17,6 +17,16 @@ def get_version():
             if line[:15] == "__version__ = '":
                 return line.rstrip()[15:-1]
 
+def get_install_requires():
+    """Get requirements for installation."""
+    # conda: Anaconda installs all needed to run scripts
+    if sys.argv[1:2] == ['bdist_conda']:
+        return ['statsmodels']
+    # pip: User installs items in requirements.txt
+    else:
+        return []
+
+
 setup(
     name='enrichmentanalysis_dvklopfenstein',
     version=get_version(),
@@ -41,5 +51,5 @@ setup(
     ],
     url='http://github.com/dvklopfenstein/enrichmentanalysis',
     description='Perform enrichment analysis on any IDs and associations',
-    #install_requires=[],
+    install_requires=get_install_requires(),
 )
