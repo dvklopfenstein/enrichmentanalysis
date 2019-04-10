@@ -1,4 +1,11 @@
+"""Init module for the Enrishment Analysis project."""
+
+__copyright__ = "Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved."
+__author__ = "DV Klopfenstein"
+
+# pylint: disable=invalid-name
 name = 'enrichmentanalysis'
-version='0.0.2'
+__version__ = '0.0.4'
+
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

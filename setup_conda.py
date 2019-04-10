@@ -41,5 +41,5 @@ setup(
     ],
     url='http://github.com/dvklopfenstein/enrichmentanalysis',
     description='Perform enrichment analysis on any IDs and associations',
-    #install_requires=[],
+    install_requires=['statsmodels'],
 )

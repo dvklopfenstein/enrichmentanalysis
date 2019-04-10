@@ -42,7 +42,19 @@ clean_dist:
 	rm -rf dist build enrichmentanalysis.egg-info
 
 vim_pip:
-	vim -p setup.py src/enrichmentanalysis/__init__.py
+	vim -p setup.py setup_conda.py src/enrichmentanalysis/__init__.py makefile
+
+wheel:
+	make clean_dist
+	python3 setup.py sdist bdist_wheel
+	ls -lh dist
+
+upload:
+	python3 -m twine upload dist/* --verbose
+
+# Install listed in requirements.txt
+install_req:
+	while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt
 
 # --------------------------------------------------------------------------------
 upload_pypi_test:
