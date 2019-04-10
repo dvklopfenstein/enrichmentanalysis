@@ -35,7 +35,7 @@ vim_:
 # --------------------------------------------------------------------------------
 # Modify version in src/enrichmentanalysis/__init__.py
 vim_pip:
-	vim -p setup.py setup_conda.py src/enrichmentanalysis/__init__.py makefile
+	vim -p src/enrichmentanalysis/__init__.py setup.py makefile
 
 wheel:
 	#python3 -m pip install --user --upgrade setuptools wheel

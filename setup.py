@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 """Setup for PyPI usage."""
 
+import sys
 from glob import glob
 from setuptools import setup
 
