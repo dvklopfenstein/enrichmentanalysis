@@ -53,11 +53,10 @@ bdist_conda:
 prep_conda:
 	conda remove --name myenv --all
 	conda create --name myenv
-test_conda:
-	conda activate myenv
-	conda install -c dvklopfenstein enrichmentanalysis_dvklopfenstein
-	run_enrichment.py
-	run_enrichment.py data/exgo/study data/exgo/population data/exgo/association
+# conda activate myenv
+# conda install -c dvklopfenstein enrichmentanalysis_dvklopfenstein
+# run_enrichment.py
+# run_enrichment.py data/exgo/study data/exgo/population data/exgo/association
 
 # --------------------------------------------------------------------------------
 upload_pypi_test:
