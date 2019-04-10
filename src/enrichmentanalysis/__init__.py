@@ -5,7 +5,7 @@ __author__ = "DV Klopfenstein"
 
 # pylint: disable=invalid-name
 name = 'enrichmentanalysis'
-__version__ = '0.0.6'
+__version__ = '0.0.8'
 
 
 # Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved.

@@ -20,12 +20,12 @@ def get_version():
 
 def get_install_requires():
     """Get requirements for installation."""
+    # pip: User installs items in requirements.txt
+    base = ['docopt', 'xlsxwriter']
     # conda: Anaconda installs all needed to run scripts
     if sys.argv[1:2] == ['bdist_conda']:
-        return ['docopt', 'statsmodels']
-    # pip: User installs items in requirements.txt
-    else:
-        return ['docopt']
+        base.append('statsmodels')
+    return base
 
 
 setup(

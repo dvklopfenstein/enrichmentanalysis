@@ -49,9 +49,11 @@ upload_pip:
 bdist_conda:
 	python setup.py bdist_conda
 
-test_conda:
+# Test in a virtual environment
+prep_conda:
 	conda remove --name myenv --all
 	conda create --name myenv
+test_conda:
 	conda activate myenv
 	conda install -c dvklopfenstein enrichmentanalysis_dvklopfenstein
 	run_enrichment.py
