@@ -37,17 +37,25 @@ vim_:
 vim_pip:
 	vim -p src/enrichmentanalysis/__init__.py setup.py makefile
 
-wheel:
+bdist_wheel:
 	#python3 -m pip install --user --upgrade setuptools wheel
 	make clean_dist
 	python3 setup.py sdist bdist_wheel
 	ls -lh dist
 
-upload:
+upload_pip:
 	python3 -m twine upload dist/* --verbose
 
-conda_dist:
+bdist_conda:
 	python setup.py bdist_conda
+
+test_conda:
+	conda remove --name myenv --all
+	conda create --name myenv
+	conda activate myenv
+	conda install -c dvklopfenstein enrichmentanalysis_dvklopfenstein
+	run_enrichment.py
+	run_enrichment.py data/exgo/study data/exgo/population data/exgo/association
 
 # --------------------------------------------------------------------------------
 upload_pypi_test:

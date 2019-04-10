@@ -49,8 +49,8 @@ def main():
     objresults.wr_notfound(prepend(prefix, args['ids0']),
                            stu_ids.union(objrun.args['pop_ids']))
     # Write Pathway Enrichment Analysis to a file
-    pval = float(args['pval']) if args['pval'] else None
-    results = objresults.get_results_cond(pval, args['pval_field'])
+    pval = float(args['pval']) if 'pval' in args else None
+    results = objresults.get_results_cond(pval, args.get('pval_field'))
     # Print results
     objrpt = ReportResults(results)  #, objrun.objmethods)
     objrpt.prt_results()
