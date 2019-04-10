@@ -1,4 +1,4 @@
-# Enrichemt AnalysisA A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A 
+# Enrichemt Analysis
 PY := python3
 
 run_go:
