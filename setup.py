@@ -22,10 +22,10 @@ def get_install_requires():
     """Get requirements for installation."""
     # conda: Anaconda installs all needed to run scripts
     if sys.argv[1:2] == ['bdist_conda']:
-        return ['statsmodels']
+        return ['docopt', 'statsmodels']
     # pip: User installs items in requirements.txt
     else:
-        return []
+        return ['docopt']
 
 
 setup(
