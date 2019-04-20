@@ -58,6 +58,10 @@ prep_conda:
 # run_enrichment.py
 # run_enrichment.py data/exgo/study data/exgo/population data/exgo/association
 
+tags:
+	git log --decorate=full --simplify-by-decoration --pretty=oneline HEAD
+	git tag -l -n
+
 # --------------------------------------------------------------------------------
 upload_pypi_test:
 	python setup.py register -r pypitest

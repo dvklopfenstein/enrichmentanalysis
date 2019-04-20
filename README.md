@@ -1,4 +1,5 @@
 # Enrichment Analysis
+[![PyPI version](/doc/images/badge_pypi.svg)](https://badge.fury.io/py/enrichmentanalysis-dvklopfenstein)
 
 Do enrichment analysis on anything if you provide:
   * IDs of the population 
