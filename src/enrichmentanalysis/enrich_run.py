@@ -52,7 +52,7 @@ class EnrichmentRun():
         ntpvals_uncorr = [o.ntpval for o in results]
         pvals_corrected = self.objmethods.run_multitest_corr(ntpvals_uncorr, log)
         self._add_multitest(results, pvals_corrected)
-        objres = EnrichmentResults(self, study_in_pop, results, study_name)
+        objres = EnrichmentResults(study_in_pop, results, self, study_name)
         return objres
 
     def _chk_genes(self, study):

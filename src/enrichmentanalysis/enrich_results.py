@@ -3,17 +3,11 @@
 __copyright__ = "Copyright (C) 2018-2019, DV Klopfenstein. All rights reserved."
 __author__ = "DV Klopfenstein"
 
-# import os
-# import sys
-# import collections as cx
-# from enrichmentanalysis.pvalcalc import FisherFactory
-# from enrichmentanalysis.multiple_testing import Methods
-
 
 class EnrichmentResults():
     """Store and manage enrichment results."""
 
-    def __init__(self, objearun, study_in_pop, results, name):
+    def __init__(self, study_in_pop, results, objearun, name="enrichmentanalysis"):
         self.name = name
         # Save the population IDs that are in the association
         self.objearun = objearun  # pop_ids pop_tot
